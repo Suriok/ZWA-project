@@ -5,6 +5,7 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background-color: rgba(237, 237, 237, 0.84);
 }
 
 header{
@@ -62,6 +63,8 @@ header{
 .profil_image{
     width: 40px;
     height: 40px;
+    display: flex;
+    align-items: center;
 }
 
 .line_header{
@@ -84,6 +87,7 @@ header{
     box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
     display: flex;
     flex-direction: column;
+    background-color: white;
 }
 .user_foto{
     width: 350px;
@@ -110,4 +114,42 @@ header{
     font-style: normal;
     font-size: 18px;
     color: rgba(30, 2, 58, 0.59);
+}
+
+.buttons_yes_no{
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button_border{
+    border: solid 2px rgba(30, 2, 58, 0.59);
+    border-radius: 10px;
+    width: 60px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+}
+
+.button_border:hover {
+    background-color: rgba(33, 2, 74, 0.18); /* Цвет фона при наведении */
+}
+
+.button_border:active {
+    background-color: #D3B6FF; /* Цвет фона при нажатии */
+}
+
+.button_foto_heart{
+    width: 30px;
+    height: 30px;
+}
+.button_foto_cross{
+    width: 20px;
+    height: 20px;
 }
