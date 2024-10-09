@@ -69,7 +69,7 @@ header{
 
 .line_header{
     height: 1px;
-    width: 770px;
+    width: 100vw;
     background-color: #41047E;
     border-color: #41047E;
 }
@@ -98,7 +98,7 @@ header{
 .name_and_age{
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 400;
+    font-weight: 600;
     font-style: normal;
     font-size: 25px;
     color: #1c0237;
@@ -110,7 +110,7 @@ header{
 .inerests{
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 400;
+    font-weight: 600;
     font-style: normal;
     font-size: 18px;
     color: rgba(30, 2, 58, 0.59);
@@ -122,11 +122,11 @@ header{
     gap: 80px;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .button_border{
-    border: solid 2px rgba(30, 2, 58, 0.59);
+    border: solid 3px rgba(30, 2, 58, 0.78);
     border-radius: 10px;
     width: 60px;
     height: 40px;
@@ -152,4 +152,73 @@ header{
 .button_foto_cross{
     width: 20px;
     height: 20px;
+}
+
+footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    margin-top: 50px;
+    height: 80px;
+    background-color: #1c0237;
+    width: 100vw;
+}
+
+.footer_text{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 18px;
+}
+
+.swipe{
+    border: solid 3px white;
+    border-radius: 10px;
+    height: 35px;
+    width: 70px;
+    background-color: white;
+    color: #1c0237;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+.image_people{
+    width: 25px;
+    height: 25px;
+}
+
+.people{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 5px;
+    color: white;
+    height: 35px;
+    width: 110px;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.people:hover {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}
+.people:hover .image_people {
+    fill: #1c0237;
+    stroke: #1c0237;
+}
+
+.people:active {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
 }
