@@ -230,13 +230,13 @@ footer{
 .profil_information{
     border: solid 3px #1c0237;
     border-radius: 10px;
-    height: 500px;
+    height: 450px;
     width: 500px;
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
-    padding-left: 50px;
+    padding: 10px 0 10px 50px;
     background-color: rgba(255, 255, 255, 0.81);
 }
 
@@ -287,8 +287,6 @@ footer{
     transform: translate(3px, -27px);
 }
 
-
-
 .div_bio{
     display: flex;
     flex-direction: column;
@@ -304,6 +302,18 @@ footer{
     height: 80px;
 }
 
+.edit_profil{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    width: 80px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #1c0237;
+    color: white;
+    margin-top: 7px;
+}
 
 
 /* account page end */
