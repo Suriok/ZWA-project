@@ -7,16 +7,24 @@ body{
     justify-content: center;
     flex-direction: column;
     background-color: rgba(237, 237, 237, 0.94);
+    margin: 0;
+    padding: 0;
 }
 
 header{
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 40px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.81);
 }
 
+a{
+    cursor: pointer;
+}
 /* start main page */
 .logo_account{
     display: flex;
@@ -29,6 +37,8 @@ header{
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .logo_image{
@@ -67,6 +77,7 @@ header{
     height: 40px;
     display: flex;
     align-items: center;
+    margin-top: 3px;
 }
 
 .line_header{
@@ -82,14 +93,14 @@ header{
 }
 
 .card{
-    border: solid 3px #41047E;
+    border: solid 3px #1c0237;
     border-radius: 15px;
     height: 440px;
     width: 350px;
     box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.81);
 }
 .user_foto{
     width: 350px;
@@ -140,11 +151,11 @@ header{
 }
 
 .button_border:hover {
-    background-color: rgba(33, 2, 74, 0.18); /* Цвет фона при наведении */
+    background-color: rgba(33, 2, 74, 0.18);   
 }
 
 .button_border:active {
-    background-color: #D3B6FF; /* Цвет фона при нажатии */
+    background-color: #D3B6FF;
 }
 
 .button_foto_heart{
@@ -162,7 +173,6 @@ footer{
     justify-content: center;
     align-items: center;
     gap: 200px;
-    margin-top: 50px;
     height: 80px;
     background-color: #1c0237;
     width: 100vw;
@@ -227,17 +237,21 @@ footer{
 /* main page end */
 
 /* start account page */
+
+.main_part{
+    margin-bottom: 50px;
+}
 .profil_information{
     border: solid 3px #1c0237;
     border-radius: 10px;
-    height: 450px;
     width: 500px;
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
-    padding: 10px 0 10px 50px;
+    padding: 10px 0 30px 50px;
     background-color: rgba(255, 255, 255, 0.81);
+    box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
 }
 
 .profil_main_text{
@@ -274,7 +288,6 @@ footer{
     border-radius: 4px;
     border: solid 2px rgba(28, 2, 55, 0.74);
     height: 23px;
-
 }
 
 ::placeholder{
@@ -313,7 +326,41 @@ footer{
     background-color: #1c0237;
     color: white;
     margin-top: 7px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* плавный переход для эффекта */
 }
 
+.edit_profil:hover {
+    background-color: #FF7CFF;
+    color: #1c0237;
+    cursor: pointer;
+}
+
+.input_pass{
+    width: 440px;
+    font-weight: 300;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: solid 2px rgba(28, 2, 55, 0.74);
+    height: 23px;
+}
+
+.edit_password{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #1c0237;
+    color: white;
+    transition: background-color 0.2s ease, color 0.3s ease; /* плавный переход для эффекта */
+}
+
+.edit_password:hover {
+    background-color: #FF7CFF;
+    color: #1c0237;
+    cursor: pointer;
+}
 
 /* account page end */
