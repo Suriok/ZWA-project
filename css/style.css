@@ -1,0 +1,425 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(237, 237, 237, 0.94);
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.81);
+}
+
+a{
+    cursor: pointer;
+    text-decoration: none;
+}
+/* start main page */
+.logo_account{
+    display: flex;
+    flex-direction: row;
+    gap: 520px;
+    margin-bottom: 10px;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo_image{
+    width: 40px;
+    height: 40px;
+}
+
+.logo_text{
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.logo_text_main{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    color: #41047E;
+    letter-spacing: 5px;
+    font-size: 15px;
+}
+
+.logo_text_small{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: #FF7CFF;
+    letter-spacing: 2px;
+    font-size: 10px;
+}
+
+.profil_image{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+}
+
+.line_header{
+    height: 1px;
+    width: 100vw;
+    background-color: #1c0237;
+    border-color: #1c0237;
+}
+
+.main_part{
+    display: flex;
+    flex-direction: column;
+}
+
+
+#swiper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 350px; /* Ширина карточек */
+    height: 400px; /* Высота карточек */
+}
+
+/* Стили для каждой карточки */
+.card {
+    width: 100%;
+    border: solid 3px #1c0237;
+    border-radius: 15px;
+    box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
+    background-color: rgb(241, 237, 237);
+    top: 20px;
+    position: absolute; /* Каждая карточка накладывается одна на другую */
+    transition: transform 0.5s, opacity 0.5s;
+    opacity: 0;
+    word-wrap: break-word;
+
+}
+
+/* Первая (видимая) карточка */
+.card.visible {
+    opacity: 1;
+    transform: translateY(0px) scale(1); /* Без смещения */
+    z-index: 3;
+}
+
+/* Вторая карточка, видна немного позади первой */
+.card.next {
+    opacity: 0.9;
+    transform: translateY(-20px) scale(0.95); /* Смещение вверх на 20px */
+    z-index: 2;
+}
+
+/* Третья карточка, видна еще дальше */
+.card.next-next {
+    opacity: 0.8;
+    transform: translateY(-40px) scale(0.9); /* Смещение вверх на 40px */
+    z-index: 1;
+}
+
+/* Анимация ухода карточек */
+.swipe-left {
+    animation: swipe-left 0.5s forwards;
+}
+
+.swipe-right {
+    animation: swipe-right 0.5s forwards;
+}
+
+@keyframes swipe-left {
+    to { transform: translateX(-100%) rotate(-15deg); opacity: 0; }
+}
+
+@keyframes swipe-right {
+    to { transform: translateX(100%) rotate(15deg); opacity: 0; }
+}
+
+
+.user_foto{
+    width: 350px;
+    height: 350px;
+    border-radius: 14px;
+}
+
+.name_and_age{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 25px;
+    color: #1c0237;
+}
+
+.main_part_text{
+    margin: 10px;
+}
+
+.inerests{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 18px;
+    color: rgba(30, 2, 58, 0.59);
+}
+
+.buttons_yes_no{
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.button_border{
+    border: solid 3px rgba(30, 2, 58, 0.78);
+    border-radius: 10px;
+    width: 60px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+}
+
+.button_border:hover {
+    background-color: rgba(33, 2, 74, 0.18);   
+}
+
+.button_border:active {
+    background-color: #D3B6FF;
+}
+
+.button_foto_heart{
+    width: 30px;
+    height: 30px;
+}
+.button_foto_cross{
+    width: 20px;
+    height: 20px;
+}
+
+footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    height: 80px;
+    background-color: #1c0237;
+    width: 100vw;
+    margin-top: auto;
+}
+
+.footer_text{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 18px;
+}
+
+.swip{
+    border: solid 3px white;
+    border-radius: 10px;
+    height: 35px;
+    width: 70px;
+    background-color: white;
+    color: #1c0237;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+.image_people{
+    width: 25px;
+    height: 25px;
+}
+
+.people{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 5px;
+    color: white;
+    height: 35px;
+    width: 110px;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.people:hover {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}
+.people:hover .image_people {
+    fill: #1c0237;
+    stroke: #1c0237;
+}
+
+.people:active {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}
+
+/* main page end */
+
+/* start account page */
+
+.main_part{
+    margin-bottom: 50px;
+}
+.profil_information{
+    border: solid 3px #1c0237;
+    border-radius: 10px;
+    width: 500px;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    padding: 10px 0 30px 50px;
+    background-color: rgba(255, 255, 255, 0.81);
+    box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
+}
+
+.profil_main_text{
+    color: #1c0237;
+}
+
+.foto_name_surname{
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+}
+
+.img_user{
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+}
+
+.account_form{
+    display: flex;
+    flex-direction: column;
+}
+
+.information_text{
+    font-size: 14px;
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.input_inf{
+    width: 200px;
+    font-weight: 300;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: solid 2px rgba(28, 2, 55, 0.74);
+    height: 23px;
+}
+
+::placeholder{
+    color: rgba(28, 2, 55, 0.27);
+    text-align: start;
+    transform: translateX(3px);
+}
+
+.input_inf_bio::placeholder{
+    transform: translate(3px, -27px);
+}
+
+.div_bio{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.input_inf_bio{
+    width: 440px;
+    font-weight: 300;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: solid 2px rgba(28, 2, 55, 0.74);
+    height: 80px;
+}
+
+.edit_profil{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    width: 80px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #1c0237;
+    color: white;
+    margin-top: 7px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* плавный переход для эффекта */
+}
+
+.edit_profil:hover {
+    background-color: #FF7CFF;
+    color: #1c0237;
+    cursor: pointer;
+}
+
+.input_pass{
+    width: 440px;
+    font-weight: 300;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: solid 2px rgba(28, 2, 55, 0.74);
+    height: 23px;
+}
+
+.edit_password{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #1c0237;
+    color: white;
+    transition: background-color 0.2s ease, color 0.3s ease; /* плавный переход для эффекта */
+}
+
+.edit_password:hover {
+    background-color: #FF7CFF;
+    color: #1c0237;
+    cursor: pointer;
+}
+
+
+/* account page end */
