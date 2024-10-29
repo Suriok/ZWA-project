@@ -209,6 +209,7 @@ a{
     margin: 10px 0 0  0;
     padding: 0;
     color: rgba(28, 2, 55, 0.43);
+    text-align: center;
 }
 .create_account_button:hover {
     background-color: #FF7CFF;
@@ -237,15 +238,16 @@ footer{
 }
 
 .swipe{
-    border: solid 3px white;
-    border-radius: 10px;
-    height: 35px;
-    width: 70px;
-    background-color: white;
-    color: #1c0237;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: row;
+    gap: 5px;
+    color: white;
+    height: 35px;
+    width: 110px;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
     box-sizing: border-box;
 }
 .image_people{
@@ -284,3 +286,22 @@ footer{
     border: solid 3px white;
     border-radius: 10px;
 }
+
+.swip:hover {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}
+.swip:hover .image_people {
+    fill: #1c0237;
+    stroke: #1c0237;
+}
+
+.swip:active {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}
+

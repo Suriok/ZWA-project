@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-body{
+body {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -11,7 +11,13 @@ body{
     padding: 0;
 }
 
-header{
+.page_container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
     padding-top: 20px;
     display: flex;
     flex-direction: column;
@@ -22,19 +28,59 @@ header{
     background-color: rgba(255, 255, 255, 0.81);
 }
 
-a{
+/* Стили для иконки профиля */
+.profil_image {
+    cursor: pointer;
+}
+
+/* Стили для бургер-меню */
+.burger-menu {
+    display: none; /* По умолчанию скрыто */
+    position: absolute;
+    top: 7vh;
+    right: 45vh;
+    background-color: white;
+    border: 2px solid #41047E;
+    border-radius: 8px;
+    width: 150px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.burger-menu a {
+    text-decoration: none;
+    padding: 10px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    color: #41047E;
+    border-bottom: 1px solid #ddd;
+}
+
+.burger-menu a:hover {
+    background-color: #1c0237;
+    color: white;
+}
+
+.burger-menu a:last-child {
+    border-bottom: none;
+}
+
+
+a {
     cursor: pointer;
     text-decoration: none;
 }
+
 /* start main page */
-.logo_account{
+.logo_account {
     display: flex;
     flex-direction: row;
     gap: 520px;
     margin-bottom: 10px;
 }
 
-.logo{
+.logo {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -42,18 +88,18 @@ a{
     cursor: pointer;
 }
 
-.logo_image{
+.logo_image {
     width: 40px;
     height: 40px;
 }
 
-.logo_text{
+.logo_text {
     display: flex;
     flex-direction: column;
     margin-top: 5px;
 }
 
-.logo_text_main{
+.logo_text_main {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 800;
@@ -63,7 +109,7 @@ a{
     font-size: 15px;
 }
 
-.logo_text_small{
+.logo_text_small {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
@@ -73,7 +119,7 @@ a{
     font-size: 10px;
 }
 
-.profil_image{
+.profil_image {
     width: 40px;
     height: 40px;
     display: flex;
@@ -81,15 +127,18 @@ a{
     margin-top: 3px;
 }
 
-.line_header{
+.line_header {
     height: 1px;
     width: 100vw;
     background-color: #1c0237;
     border-color: #1c0237;
 }
 
-.main_part{
+.main_part {
+    flex: 1;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 }
 
@@ -99,8 +148,9 @@ a{
     flex-direction: column;
     align-items: center;
     position: relative;
-    width: 350px; /* Ширина карточек */
-    height: 400px; /* Высота карточек */
+    width: 350px;
+    height: 400px;
+
 }
 
 /* Стили для каждой карточки */
@@ -111,35 +161,32 @@ a{
     box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
     background-color: rgb(241, 237, 237);
     top: 20px;
-    position: absolute; /* Каждая карточка накладывается одна на другую */
+    position: absolute;
     transition: transform 0.5s, opacity 0.5s;
     opacity: 0;
     word-wrap: break-word;
 
 }
 
-/* Первая (видимая) карточка */
 .card.visible {
     opacity: 1;
-    transform: translateY(0px) scale(1); /* Без смещения */
+    transform: translateY(0px) scale(1);
     z-index: 3;
 }
 
-/* Вторая карточка, видна немного позади первой */
 .card.next {
     opacity: 0.9;
-    transform: translateY(-20px) scale(0.95); /* Смещение вверх на 20px */
+    transform: translateY(-20px) scale(0.95);
     z-index: 2;
 }
 
-/* Третья карточка, видна еще дальше */
+
 .card.next-next {
     opacity: 0.8;
-    transform: translateY(-40px) scale(0.9); /* Смещение вверх на 40px */
+    transform: translateY(-40px) scale(0.9);
     z-index: 1;
 }
 
-/* Анимация ухода карточек */
 .swipe-left {
     animation: swipe-left 0.5s forwards;
 }
@@ -149,21 +196,27 @@ a{
 }
 
 @keyframes swipe-left {
-    to { transform: translateX(-100%) rotate(-15deg); opacity: 0; }
+    to {
+        transform: translateX(-100%) rotate(-15deg);
+        opacity: 0;
+    }
 }
 
 @keyframes swipe-right {
-    to { transform: translateX(100%) rotate(15deg); opacity: 0; }
+    to {
+        transform: translateX(100%) rotate(15deg);
+        opacity: 0;
+    }
 }
 
 
-.user_foto{
+.user_foto {
     width: 350px;
     height: 350px;
     border-radius: 14px;
 }
 
-.name_and_age{
+.name_and_age {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
@@ -172,11 +225,11 @@ a{
     color: #1c0237;
 }
 
-.main_part_text{
+.main_part_text {
     margin: 10px;
 }
 
-.inerests{
+.inerests {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
@@ -185,7 +238,7 @@ a{
     color: rgba(30, 2, 58, 0.59);
 }
 
-.buttons_yes_no{
+.buttons_yes_no {
     display: flex;
     flex-direction: row;
     gap: 80px;
@@ -194,7 +247,7 @@ a{
     margin-top: 100px;
 }
 
-.button_border{
+.button_border {
     border: solid 3px rgba(30, 2, 58, 0.78);
     border-radius: 10px;
     width: 60px;
@@ -207,23 +260,24 @@ a{
 }
 
 .button_border:hover {
-    background-color: rgba(33, 2, 74, 0.18);   
+    background-color: rgba(33, 2, 74, 0.18);
 }
 
 .button_border:active {
     background-color: #D3B6FF;
 }
 
-.button_foto_heart{
+.button_foto_heart {
     width: 30px;
     height: 30px;
 }
-.button_foto_cross{
+
+.button_foto_cross {
     width: 20px;
     height: 20px;
 }
 
-footer{
+footer {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -231,11 +285,11 @@ footer{
     gap: 200px;
     height: 80px;
     background-color: #1c0237;
-    width: 100vw;
+    min-width: 100vw;
     margin-top: auto;
 }
 
-.footer_text{
+.footer_text {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
@@ -243,7 +297,7 @@ footer{
     font-size: 18px;
 }
 
-.swip{
+.swip {
     border: solid 3px white;
     border-radius: 10px;
     height: 35px;
@@ -254,13 +308,15 @@ footer{
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    cursor: pointer;
 }
-.image_people{
+
+.image_people {
     width: 25px;
     height: 25px;
 }
 
-.people{
+.people {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -280,6 +336,7 @@ footer{
     border: solid 3px white;
     border-radius: 10px;
 }
+
 .people:hover .image_people {
     fill: #1c0237;
     stroke: #1c0237;
@@ -296,10 +353,11 @@ footer{
 
 /* start account page */
 
-.main_part{
+.main_part {
     margin-bottom: 50px;
 }
-.profil_information{
+
+.profil_information {
     border: solid 3px #1c0237;
     border-radius: 10px;
     width: 500px;
@@ -312,34 +370,34 @@ footer{
     box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
 }
 
-.profil_main_text{
+.profil_main_text {
     color: #1c0237;
 }
 
-.foto_name_surname{
+.foto_name_surname {
     display: flex;
     flex-direction: row;
     gap: 60px;
 }
 
-.img_user{
+.img_user {
     width: 180px;
     height: 180px;
     border-radius: 50%;
 }
 
-.account_form{
+.account_form {
     display: flex;
     flex-direction: column;
 }
 
-.information_text{
+.information_text {
     font-size: 14px;
     margin-bottom: 3px;
     font-weight: 600;
 }
 
-.input_inf{
+.input_inf {
     width: 200px;
     font-weight: 300;
     margin-bottom: 8px;
@@ -348,23 +406,23 @@ footer{
     height: 23px;
 }
 
-::placeholder{
+::placeholder {
     color: rgba(28, 2, 55, 0.27);
     text-align: start;
     transform: translateX(3px);
 }
 
-.input_inf_bio::placeholder{
+.input_inf_bio::placeholder {
     transform: translate(3px, -27px);
 }
 
-.div_bio{
+.div_bio {
     display: flex;
     flex-direction: column;
     margin-top: 15px;
 }
 
-.input_inf_bio{
+.input_inf_bio {
     width: 440px;
     font-weight: 300;
     margin-bottom: 8px;
@@ -373,7 +431,7 @@ footer{
     height: 80px;
 }
 
-.edit_profil{
+.edit_profil {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
@@ -384,7 +442,7 @@ footer{
     background-color: #1c0237;
     color: white;
     margin-top: 7px;
-    transition: background-color 0.3s ease, color 0.3s ease; /* плавный переход для эффекта */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .edit_profil:hover {
@@ -393,7 +451,7 @@ footer{
     cursor: pointer;
 }
 
-.input_pass{
+.input_pass {
     width: 440px;
     font-weight: 300;
     margin-bottom: 8px;
@@ -402,7 +460,7 @@ footer{
     height: 23px;
 }
 
-.edit_password{
+.edit_password {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
@@ -412,7 +470,7 @@ footer{
     border-radius: 10px;
     background-color: #1c0237;
     color: white;
-    transition: background-color 0.2s ease, color 0.3s ease; /* плавный переход для эффекта */
+    transition: background-color 0.2s ease, color 0.3s ease;
 }
 
 .edit_password:hover {

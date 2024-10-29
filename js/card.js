@@ -1,3 +1,4 @@
+// Card Animation start
 document.addEventListener("DOMContentLoaded", function() {
     const swiper = document.getElementById("swiper"); // Контейнер для карточек
     const cards = Array.from(swiper.querySelectorAll(".card")); // Все карточки как массив
@@ -51,10 +52,117 @@ document.addEventListener("DOMContentLoaded", function() {
             currentIndex = (currentIndex + 1) % cards.length; // Цикличный индекс для бесконечного стека
 
             initializeStack(); // Обновляем классы карточек для эффекта лесенки
-        }, { once: true }); // Обработчик срабатывает один раз
+        }, {once: true}); // Обработчик срабатывает один раз
     }
 
     // Обработчики кликов для кнопок
     buttonHeart.parentElement.addEventListener("click", () => showNextCard("right")); // Клик на сердце — уход вправо
     buttonCross.parentElement.addEventListener("click", () => showNextCard("left")); // Клик на крестик — уход влево
+// Card Animation end
+
+
+
+    // Burger menu start
+
+    // Получаем элементы
+    const profileImage = document.querySelector('.profil_image'); // Кнопка открытия меню
+    const burgerMenu = document.getElementById('burgerMenu'); // Само меню
+
+    // Функция для переключения видимости меню
+    profileImage.addEventListener('click', () => {
+        burgerMenu.style.display = burgerMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Закрытие меню при клике вне его области
+    document.addEventListener('click', (event) => {
+        if (!burgerMenu.contains(event.target) && event.target !== profileImage) {
+            burgerMenu.style.display = 'none';
+        }
+    });
+    // Burger menu end
 });
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const heartButton = document.querySelector(".button_foto_heart");
+
+    if (heartButton) {
+        heartButton.addEventListener("click", function() {
+            // Найти видимую карточку
+            const card = document.querySelector(".card.visible");
+            if (card) {
+                // Извлечь данные пользователя из карточки
+                const userData = {
+                    image: card.querySelector(".user_foto").src,
+                    nameAndAge: card.querySelector(".name_and_age").textContent,
+                    interests: card.querySelector(".inerests").textContent
+                };
+
+                // Сохранить данные карточки в localStorage
+                let savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
+                savedUsers.push(userData);
+                localStorage.setItem("savedUsers", JSON.stringify(savedUsers));
+
+                // Показать уведомление о сохранении
+                const notification = document.createElement("div");
+                notification.className = "save-notification";
+                notification.textContent = "Пользователь сохранен на страницу people";
+                document.body.appendChild(notification);
+
+                // Удалить уведомление через 3 секунды
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
+    const pageContainer = document.querySelector(".page_container");
+
+    savedUsers.forEach(user => {
+        // Создаем элемент карточки для каждого сохраненного пользователя
+        const userCard = document.createElement("div");
+        userCard.className = "card";
+
+        // Вставляем данные пользователя
+        userCard.innerHTML = `
+            <img class="user_foto" src="${user.image}" alt="user foto">
+            <div class="main_part_text">
+                <div class="name_and_age">${user.nameAndAge}</div>
+                <div class="inerests">${user.interests}</div>
+            </div>
+        `;
+
+        // Добавляем карточку в контейнер на странице
+        pageContainer.appendChild(userCard);
+    });
+});
+
