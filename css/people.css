@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(237, 237, 237, 0.94);
+    margin: 0;
+    padding: 0;
+}
+
+.page_container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.81);
+}
+
+/* Стили для иконки профиля */
+.profil_image {
+    cursor: pointer;
+}
+
+/* Стили для бургер-меню */
+.burger-menu {
+    display: none; /* По умолчанию скрыто */
+    position: absolute;
+    top: 7vh;
+    right: 45vh;
+    background-color: white;
+    border: 2px solid #41047E;
+    border-radius: 8px;
+    width: 150px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.burger-menu a {
+    text-decoration: none;
+    padding: 10px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    color: #41047E;
+    border-bottom: 1px solid #ddd;
+}
+
+.burger-menu a:hover {
+    background-color: #1c0237;
+    color: white;
+}
+
+.burger-menu a:last-child {
+    border-bottom: none;
+}
+
+
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* start main page */
+.logo_account {
+    display: flex;
+    flex-direction: row;
+    gap: 520px;
+    margin-bottom: 10px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo_image {
+    width: 40px;
+    height: 40px;
+}
+
+.logo_text {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.logo_text_main {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    color: #41047E;
+    letter-spacing: 5px;
+    font-size: 15px;
+}
+
+.logo_text_small {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: #FF7CFF;
+    letter-spacing: 2px;
+    font-size: 10px;
+}
+
+.profil_image {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+}
+
+.line_header {
+    height: 1px;
+    width: 100vw;
+    background-color: #1c0237;
+    border-color: #1c0237;
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    height: 80px;
+    background-color: #1c0237;
+    min-width: 100vw;
+    margin-top: auto;
+}
+
+.footer_text {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 18px;
+}
+
+.swip {
+    color: white;
+    height: 35px;
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+}
+
+.image_people {
+    width: 25px;
+    height: 25px;
+    fill: #1c0237;
+    stroke: #1c0237;;
+}
+
+.people {
+    border-radius: 10px;
+    border: solid 3px white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    background-color: white;
+    color: #1c0237;
+    gap: 5px;
+    height: 35px;
+    width: 110px;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.swip:hover {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}
+
+.swip:active {
+    background-color: white;
+    color: #1c0237;
+    border: solid 3px white;
+    border-radius: 10px;
+}

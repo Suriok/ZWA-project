@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
-    <link rel="stylesheet" href="create%20account.css">
-    <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48" />
+    <link rel="stylesheet" href="css/create_account.css">
+    <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48"/>
+    <script src="js/card.js" defer></script>
 </head>
 <body>
 <header>
     <div class="logo_account">
         <div class="logo">
-            <a class="logo" href="main.html">
+            <a class="logo" href="index.html">
                 <img class="logo_image" alt="logo-hearte" src="/ZWA-project/foto/logo-hearte.png">
                 <div class="logo_text">
                     <div class="logo_text_main">FlAME</div>
@@ -19,6 +21,10 @@
             </a>
         </div>
         <img class="profil_image" alt="profil foto" src="/ZWA-project/foto/profile.png">
+        <div class="burger-menu" id="burgerMenu">
+            <a href="log_in.html">Log In</a>
+            <a href="create%20account.html">Registration</a>
+        </div>
     </div>
     <hr class="line_header">
 </header>
@@ -30,9 +36,17 @@
     </div>
     <div class="down_part">
         <form class="account_form">
+            <div class="form_photo">
+                <div id="photo_container">
+                    <img id="photo_preview" src="#" alt="Profile Photo Preview" style="display: none;">
+                </div>
+                <label for="profile_photo" class="information_text">Upload Profile Photo</label>
+                <input  id="profile_photo" type="file" name="profile_photo" accept="image/*" onchange="previewPhoto(event)">
+            </div>
+
             <div class="firs_last_name">
                 <div class="form">
-                    <label  for="name" class="information_text">Name</label>
+                    <label for="name" class="information_text">Name</label>
                     <input class="input_inf_name_surname" id="name" type="text" name="name" placeholder="John">
                 </div>
                 <div class="form">
@@ -40,36 +54,37 @@
                     <input class="input_inf_name_surname" id="surname" type="text" name="surname" placeholder="Doe">
                 </div>
             </div>
-                <div class="form">
-                    <label for="email" class="information_text">Email</label>
-                    <input class="input_inf" id="email" type="email" name="email" placeholder="johndoe@gmail.com">
-                </div>
-                <div class="form">
-                    <label for="password" class="information_text">Password</label>
-                    <input class="input_inf" id="password" type="password" name="password">
-                </div>
-                <div class="form">
-                    <label for="confirm_password" class="information_text">Confirm Password</label>
-                    <input class="input_inf" id="confirm_password" type="password" name="confirm_password">
-                </div>
-                <div class="form">
-                    <label for="date_birth" class="information_text">Birth Date</label>
-                    <input class="input_inf" id="date_birth" type="date" name="date_birth">
-                </div>
-                <div class="form">
-                    <label for="gender" class="information_text">Gender</label>
-                    <select class="input_inf" name="gender" id="gender">
-                        <option value="">Select your gender</option>
-                        <option value="woman">woman</option>
-                        <option value="man">man</option>
-                        <option value="non_binary">Non binary</option>
-                        <option value="other_option">Other option</option>
-                    </select>
-                </div>
+            <div class="form">
+                <label for="email" class="information_text">Email</label>
+                <input class="input_inf" id="email" type="email" name="email" placeholder="johndoe@gmail.com">
+            </div>
+            <div class="form">
+                <label for="password" class="information_text">Password</label>
+                <input class="input_inf" id="password" type="password" name="password">
+            </div>
+            <div class="form">
+                <label for="confirm_password" class="information_text">Confirm Password</label>
+                <input class="input_inf" id="confirm_password" type="password" name="confirm_password">
+            </div>
+            <div class="form">
+                <label for="date_birth" class="information_text">Birth Date</label>
+                <input class="input_inf" id="date_birth" type="date" name="date_birth">
+            </div>
+            <div class="form">
+                <label for="gender" class="information_text">Gender</label>
+                <select class="input_inf" name="gender" id="gender">
+                    <option value="">Select your gender</option>
+                    <option value="woman">woman</option>
+                    <option value="man">man</option>
+                    <option value="non_binary">Non binary</option>
+                    <option value="other_option">Other option</option>
+                </select>
+            </div>
             <div class="div_bio">
                 <form class="account_form">
                     <label for="bio" class="information_text">Bio</label>
-                    <input class="input_inf_bio" id="bio" type="text" name="bio" placeholder="Passionate about creating user-friendly applications.">
+                    <input class="input_inf_bio" id="bio" type="text" name="bio"
+                           placeholder="Passionate about creating user-friendly applications.">
                 </form>
             </div>
         </form>
@@ -80,12 +95,23 @@
 </div>
 
 <footer>
-    <div class="swipe">
-        <h5 class="footer_text">Swipe</h5>
+    <div class="swip">
+        <a class="swip" href="index.html">
+            <h5 class="footer_text">Swipe</h5>
+        </a>
     </div>
     <div class="people">
-        <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" class="image_people"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path></g></svg>
-        <h5 class="footer_text">People</h5>
+        <a class="people" href="people.html">
+            <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
+                 class="image_people">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
+                </g>
+            </svg>
+            <h5 class="footer_text">People</h5>
+        </a>
     </div>
 </footer>
 </body>

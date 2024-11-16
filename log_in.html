@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Log In</title>
-    <link rel="stylesheet" href="create%20account.css">
-    <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48" />
+    <link rel="stylesheet" href="css/create_account.css">
+    <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48"/>
+    <script src="js/card.js" defer></script>
 </head>
 <body>
 <header>
@@ -19,6 +20,10 @@
             </a>
         </div>
         <img class="profil_image" alt="profil foto" src="/ZWA-project/foto/profile.png">
+        <div class="burger-menu" id="burgerMenu">
+            <a href="log_in.html">Log In</a>
+            <a href="create%20account.html">Registration</a>
+        </div>
     </div>
     <hr class="line_header">
 </header>
@@ -42,20 +47,35 @@
         <div class="information_button">
 
             <button class="create_account_button">Log In</button>
-            <a  href="forget_password.html">
-            <h5 class="forget_password_text">Forget Password?</h5>
+            <a href="forget_password.html">
+                <h5 class="forget_password_text">Forget Password?</h5>
             </a>
+            <a href="create%20account.html">
+                <h5 class="forget_password_text">Do not have account yet?</h5>
+            </a>
+
         </div>
     </div>
 </div>
 
 <footer>
-    <div class="swipe">
-        <h5 class="footer_text">Swipe</h5>
+    <div class="swip">
+        <a class="swip" href="index.html">
+            <h5 class="footer_text">Swipe</h5>
+        </a>
     </div>
     <div class="people">
-        <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" class="image_people"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path></g></svg>
-        <h5 class="footer_text">People</h5>
+        <a class="people" href="people.html">
+            <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
+                 class="image_people">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
+                </g>
+            </svg>
+            <h5 class="footer_text">People</h5>
+        </a>
     </div>
 </footer>
 </body>
