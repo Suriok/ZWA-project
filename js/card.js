@@ -1,5 +1,5 @@
 // Card Animation start
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const swiper = document.getElementById("swiper"); // Контейнер для карточек
     const cards = Array.from(swiper.querySelectorAll(".card")); // Все карточки как массив
     let currentIndex = 0; // Индекс текущей отображаемой карточки
@@ -60,43 +60,31 @@ document.addEventListener("DOMContentLoaded", function() {
     buttonCross.parentElement.addEventListener("click", () => showNextCard("left")); // Клик на крестик — уход влево
 // Card Animation end
 
+});
 
-
-    // Burger menu start
-
-    // Получаем элементы
+document.addEventListener('DOMContentLoaded', () => {
     const profileImage = document.querySelector('.profil_image'); // Кнопка открытия меню
     const burgerMenu = document.getElementById('burgerMenu'); // Само меню
 
-    // Функция для переключения видимости меню
-    profileImage.addEventListener('click', () => {
-        burgerMenu.style.display = burgerMenu.style.display === 'flex' ? 'none' : 'flex';
-    });
+    if (profileImage && burgerMenu) { // Проверяем, существуют ли элементы на странице
+        // Функция для переключения видимости меню
+        profileImage.addEventListener('click', () => {
+            burgerMenu.style.display = burgerMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
 
-    // Закрытие меню при клике вне его области
-    document.addEventListener('click', (event) => {
-        if (!burgerMenu.contains(event.target) && event.target !== profileImage) {
-            burgerMenu.style.display = 'none';
-        }
-    });
-    // Burger menu end
+        // Закрытие меню при клике вне его области
+        document.addEventListener('click', (event) => {
+            if (!burgerMenu.contains(event.target) && event.target !== profileImage) {
+                burgerMenu.style.display = 'none';
+            }
+        });
+    }
 });
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const heartButton = document.querySelector(".button_foto_heart");
 
     if (heartButton) {
-        heartButton.addEventListener("click", function() {
+        heartButton.addEventListener("click", function () {
             // Найти видимую карточку
             const card = document.querySelector(".card.visible");
             if (card) {
@@ -129,40 +117,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+    function previewPhoto(event) {
+    const photoPreview = document.getElementById('photo_preview');
+    const file = event.target.files[0];
 
+    if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+    photoPreview.src = e.target.result;
+    photoPreview.style.display = 'block';
+};
+    reader.readAsDataURL(file);
+} else {
+    photoPreview.src = "#";
+    photoPreview.style.display = 'none';
+}
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function() {
-    const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
-    const pageContainer = document.querySelector(".page_container");
-
-    savedUsers.forEach(user => {
-        // Создаем элемент карточки для каждого сохраненного пользователя
-        const userCard = document.createElement("div");
-        userCard.className = "card";
-
-        // Вставляем данные пользователя
-        userCard.innerHTML = `
-            <img class="user_foto" src="${user.image}" alt="user foto">
-            <div class="main_part_text">
-                <div class="name_and_age">${user.nameAndAge}</div>
-                <div class="inerests">${user.interests}</div>
-            </div>
-        `;
-
-        // Добавляем карточку в контейнер на странице
-        pageContainer.appendChild(userCard);
-    });
-});
 
