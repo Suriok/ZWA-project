@@ -61,6 +61,7 @@
             <div class="form">
                 <label for="password" class="information_text">Password</label>
                 <input class="input_inf" id="password" type="password" name="password">
+                <span id="passwordError" class="error_message" style="display: none;">Passwords do not match</span>
             </div>
             <div class="form">
                 <label for="confirm_password" class="information_text">Confirm Password</label>
@@ -81,11 +82,12 @@
                 </select>
             </div>
             <div class="div_bio">
-                <form class="account_form">
+                <div class="form">
                     <label for="bio" class="information_text">Bio</label>
-                    <input class="input_inf_bio" id="bio" type="text" name="bio"
-                           placeholder="Passionate about creating user-friendly applications.">
-                </form>
+                    <textarea id="bio" class="input_inf_bio" name="bio" placeholder="Passionate about creating user-friendly applications."
+                              rows="4" cols="50" maxlength="120"></textarea>
+                    <div id="charCount" class="char_count">0/120</div>
+                </div>
             </div>
         </form>
         <div class="information_button">
