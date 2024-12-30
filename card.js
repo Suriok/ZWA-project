@@ -1,3 +1,24 @@
+//pop up
+document.addEventListener('DOMContentLoaded', function () {
+    const isLoggedIn = window.isLoggedIn; // Получаем переменную из PHP
+
+    if (!isLoggedIn) {
+        const popup = document.getElementById('popup');
+        const overlay = document.getElementById('popup-overlay');
+
+        // Показываем popup и overlay
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
+
+        // Закрытие по клику на overlay
+        overlay.addEventListener('click', () => {
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+    }
+});
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const swiper = document.getElementById("swiper"); // Kontejner pro karty
     const cards = Array.from(swiper.querySelectorAll(".card")); // Všechny karty jako pole
@@ -149,49 +170,46 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// AJAX pro stranku register.php
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.account_form');
-    const submitButton = document.querySelector('.create_account_button');
 
-    submitButton.addEventListener('click', function (e) {
-        e.preventDefault(); // Предотвращаем стандартное поведение кнопки
 
-        const formData = new FormData(form);
 
-        fetch('register.php', {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Убираем старые ошибки
-                document.querySelectorAll('.error_message').forEach(el => el.textContent = '');
-                document.querySelectorAll('.input_inf').forEach(el => el.classList.remove('error'));
+document.addEventListener('DOMContentLoaded', function() {
+    const likeButtons = document.querySelectorAll('.button_border');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const email = this.getAttribute('data-user-id'); // Получаем email из атрибута
+            const hashedEmail = await sha256(email); // Хэшируем email перед отправкой
 
-                if (data.success) {
-                    alert('Registration successful!');
-                    form.reset(); // Очищаем форму
-                } else {
-                    // Обрабатываем ошибки
-                    for (const [field, message] of Object.entries(data.errors)) {
-                        const input = document.querySelector(`[name="${field}"]`);
-                        const errorMessage = input?.closest('.form')?.querySelector('.error_message');
-
-                        if (input) {
-                            input.classList.add('error'); // Подсвечиваем поле
-                        }
-                        if (errorMessage) {
-                            errorMessage.textContent = message; // Выводим сообщение
-                        }
-                    }
-                }
+            fetch('like.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: hashedEmail }) // Передаём хэшированный email
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Пользователь добавлен в избранное!');
+                    } else {
+                        alert('Ошибка добавления пользователя: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка запроса:', error);
+                    alert('Произошла ошибка при добавлении пользователя.');
+                });
+        });
     });
 });
+
+// Функция для хэширования email с использованием SHA-256
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);                   // Кодируем строку в массив байтов
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);  // Хэшируем данные
+    const hashArray = Array.from(new Uint8Array(hashBuffer));             // Преобразуем буфер в массив байтов
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // Конвертируем в строку HEX
+    return hashHex;
+}
+
+
 
 

@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Reduce password</title>
-    <link rel="stylesheet" href="css/create_account.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48"/>
 </head>
 <body>
 <header>
     <div class="logo_account">
         <div class="logo">
-            <a class="logo" href="index.html">
-                <img class="logo_image" alt="logo-hearte" src="/ZWA-project/foto/logo-hearte.png">
+            <a class="logo" href="index.php">
+                <img class="logo_image" alt="logo-hearte" src="foto/logo-hearte.png">
                 <div class="logo_text">
                     <div class="logo_text_main">FlAME</div>
                     <div class="logo_text_small">FIND YOUR LOVE HERE</div>
                 </div>
             </a>
         </div>
-        <img class="profil_image" alt="profil foto" src="/ZWA-project/foto/profile.png">
+        <img class="profil_image" alt="profil foto" src="foto/profile.png">
     </div>
     <hr class="line_header">
 </header>
@@ -54,12 +54,12 @@
 
 <footer>
     <div class="swip">
-        <a class="swip" href="index.html">
+        <a class="swip" href="index.php">
             <h5 class="footer_text">Swipe</h5>
         </a>
     </div>
     <div class="people">
-        <a class="people" href="people.html">
+        <a class="people" href="people.php">
             <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
                  class="image_people">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

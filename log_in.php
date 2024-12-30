@@ -1,10 +1,10 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
+
+// Извлечение ошибок и старых значений из сессии
 $errors = $_SESSION['errors'] ?? [];
-unset($_SESSION['errors']);
+$oldValues = $_SESSION['oldValues'] ?? [];
+unset($_SESSION['errors'], $_SESSION['oldValues']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,13 +41,13 @@ unset($_SESSION['errors']);
         <form class="account_form" method="POST" action="log.php">
             <div class="form">
                 <label for="email" class="information_text">Email</label>
-                <input class="input_inf" id="email" type="email" name="email" placeholder="johndoe@gmail.com">
-                <span class="error_message"><?php echo $errors['email'] ?? ''; ?></span>
+                <input class="input_inf" id="email" type="email" name="email" placeholder="johndoe@gmail.com" value="<?php echo htmlspecialchars($oldValues['email'] ?? ''); ?>">
+                <span class="error_message"><?php echo htmlspecialchars($errors['email'] ?? ''); ?></span>
             </div>
             <div class="form">
                 <label for="password" class="information_text">Password</label>
-                <input class="input_inf" id="password" type="password" name="password" >
-                <span class="error_message"><?php echo $errors['password'] ?? ''; ?></span>
+                <input class="input_inf" id="password" type="password" name="password">
+                <span class="error_message"><?php echo htmlspecialchars($errors['password'] ?? ''); ?></span>
             </div>
             <div class="information_button">
                 <button class="create_account_button" name="log_in" type="submit">Log In</button>
@@ -57,13 +57,10 @@ unset($_SESSION['errors']);
                 <a href="register.php">
                     <h5 class="forget_password_text">Do not have account yet?</h5>
                 </a>
-
             </div>
         </form>
-
     </div>
 </div>
-
 <footer>
     <div class="swip">
         <a class="swip" href="index.php">
@@ -74,11 +71,7 @@ unset($_SESSION['errors']);
         <a class="people" href="people.php">
             <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
                  class="image_people">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                    <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
-                </g>
+                <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
             </svg>
             <h5 class="footer_text">People</h5>
         </a>

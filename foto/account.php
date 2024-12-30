@@ -1,16 +1,17 @@
 <?php
 session_start();
-require 'session_check.php';
 
+
+// Проверяем, залогинен ли пользователь
+if (!isset($_SESSION['user'])) {
+    header('Location: log_in.php');
+    exit;
+}
+
+// Допустим, при регистрации/логине вы положили всю информацию о пользователе в сессию:
 $user = $_SESSION['user'];
 $photo_mime = $user['photo'] ?? '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log_out'])) {
-    session_unset(); // Удаляем все переменные сессии
-    session_destroy(); // Завершаем сессию
-    header("Location: index.php"); // Перенаправляем на главную страницу
-    exit();
-}
 // Если при обработке POST нужно что-то обновлять/сохранять,
 // вы можете это сделать выше (перед выводом HTML).
 ?>
@@ -93,30 +94,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log_out'])) {
             </form>
         </div>
         <div class="information_button">
-            <form method="POST" action="account.php">
-                <button class="edit_profil" type="submit" name="log_out">Log Out</button>
-            </form>
+            <a href="log_in.php">
+                <button class="edit_profil" type="button">Log Out</button>
+            </a>
         </div>
     </div>
 </section>
 <footer>
-    <div class="swip">
-        <a class="swip" href="index.php">
-            <h5 class="footer_text">Swipe</h5>
-        </a>
+    <div class="swipe">
+        <h5 class="footer_text">Swipe</h5>
     </div>
     <div class="people">
-        <a class="people" href="people.php">
-            <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
-                 class="image_people">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                    <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
-                </g>
-            </svg>
-            <h5 class="footer_text">People</h5>
-        </a>
+        <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" class="image_people">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
+            </g>
+        </svg>
+        <h5 class="footer_text">People</h5>
     </div>
 </footer>
 </body>
