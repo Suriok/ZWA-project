@@ -1,9 +1,17 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+session_start();
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Log In</title>
-    <link rel="stylesheet" href="css/create_account.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48"/>
     <script src="js/card.js" defer></script>
 </head>
@@ -11,19 +19,15 @@
 <header>
     <div class="logo_account">
         <div class="logo">
-            <a class="logo" href="index.html">
-                <img class="logo_image" alt="logo-hearte" src="/ZWA-project/foto/logo-hearte.png">
+            <a class="logo" href="index.php">
+                <img class="logo_image" alt="logo-hearte" src="foto/logo-hearte.png">
                 <div class="logo_text">
                     <div class="logo_text_main">FlAME</div>
                     <div class="logo_text_small">FIND YOUR LOVE HERE</div>
                 </div>
             </a>
         </div>
-        <img class="profil_image" alt="profil foto" src="/ZWA-project/foto/profile.png">
-        <div class="burger-menu" id="burgerMenu">
-            <a href="log_in.html">Log In</a>
-            <a href="create%20account.html">Registration</a>
-        </div>
+        <img class="profil_image" alt="profil foto" src="foto/profile.png">
     </div>
     <hr class="line_header">
 </header>
@@ -34,38 +38,40 @@
         </div>
     </div>
     <div class="down_part">
-        <form class="account_form">
+        <form class="account_form" method="POST" action="log.php">
             <div class="form">
                 <label for="email" class="information_text">Email</label>
                 <input class="input_inf" id="email" type="email" name="email" placeholder="johndoe@gmail.com">
+                <span class="error_message"><?php echo $errors['email'] ?? ''; ?></span>
             </div>
             <div class="form">
                 <label for="password" class="information_text">Password</label>
-                <input class="input_inf" id="password" type="password" name="password">
+                <input class="input_inf" id="password" type="password" name="password" >
+                <span class="error_message"><?php echo $errors['password'] ?? ''; ?></span>
+            </div>
+            <div class="information_button">
+                <button class="create_account_button" name="log_in" type="submit">Log In</button>
+                <a href="forget_password.php">
+                    <h5 class="forget_password_text">Forget Password?</h5>
+                </a>
+                <a href="register.php">
+                    <h5 class="forget_password_text">Do not have account yet?</h5>
+                </a>
+
             </div>
         </form>
-        <div class="information_button">
 
-            <button class="create_account_button">Log In</button>
-            <a href="forget_password.html">
-                <h5 class="forget_password_text">Forget Password?</h5>
-            </a>
-            <a href="create%20account.html">
-                <h5 class="forget_password_text">Do not have account yet?</h5>
-            </a>
-
-        </div>
     </div>
 </div>
 
 <footer>
     <div class="swip">
-        <a class="swip" href="index.html">
+        <a class="swip" href="index.php">
             <h5 class="footer_text">Swipe</h5>
         </a>
     </div>
     <div class="people">
-        <a class="people" href="people.html">
+        <a class="people" href="people.php">
             <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
                  class="image_people">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
