@@ -65,6 +65,7 @@ if (empty($errors)) {
                         $_SESSION['user'] = [
                             'name'       => $user['name'],
                             'surname'    => $user['surname'],
+                            'email'       => $email,
                             'bio'        => $user['bio'] ?? '',
                             'photo'      => $user['photo'] ?? '',
                             'photo_mime' => $user['photo_mime'] ?? '',

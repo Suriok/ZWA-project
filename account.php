@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log_out'])) {
 
             <form class="account_form">
                 <label for="name" class="information_text">Name</label>
-                <input class="input_inf"
+                <input class="input_inf" readonly
                        id="name"
                        type="text"
                        name="name"
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log_out'])) {
                 >
 
                 <label for="surname" class="information_text">Surname</label>
-                <input class="input_inf"
+                <input class="input_inf" readonly
                        id="surname"
                        type="text"
                        name="surname"
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log_out'])) {
                 >
 
                 <label for="email" class="information_text">Email</label>
-                <input class="input_inf"
+                <input class="input_inf" readonly
                        id="email"
                        type="email"
                        name="email"
@@ -84,12 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log_out'])) {
         <div class="div_bio">
             <form class="account_form">
                 <label for="bio" class="bio_text">Bio</label>
-                <input class="input_inf_bio"
-                       id="bio"
-                       type="text"
-                       name="bio"
-                       value="<?php echo htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                >
+                <textarea class="input_inf_bio" readonly id="bio" name="bio"><?php echo trim(htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8')); ?></textarea>
             </form>
         </div>
         <div class="information_button">

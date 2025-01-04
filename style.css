@@ -1,4 +1,10 @@
 
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
 body {
     max-width: 100%;
     align-items: center;
@@ -9,7 +15,7 @@ body {
     background-color: rgba(237, 237, 237, 0.94);
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
+
 }
 
 /* On all pages header same */
@@ -89,7 +95,7 @@ header {
     width: 150px;
     z-index: 1000;
     display: none;
-    top: 7vh;
+    top: 9vh;
     position: absolute;
     right: 45vh;
     flex-direction: column;
@@ -120,7 +126,8 @@ a {
 /* footer for all pages same */
 footer {
     min-width: 100vw;
-    margin-top: auto;
+    flex-shrink: 0;
+    margin-top: 120px;
     align-items: center;
     justify-content: center;
     gap: 200px;
@@ -177,6 +184,60 @@ footer {
 
 /* index.php */
 
+#popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Затемнение */
+    display: none;
+    z-index: 9999; /* Высший приоритет */
+}
+
+#popup {
+    font-family: "Open Sans", sans-serif;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    border: solid 3px #1c0237;
+    box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
+    background-color: white;
+    border-radius: 10px;
+    z-index: 10000; /* Поверх overlay */
+    display: none;
+    text-align: center;
+}
+
+#popup h2 {
+    font-family: "Open Sans", sans-serif;
+    margin-bottom: 15px;
+    font-size: 24px;
+    color: #333;
+}
+
+#popup p {
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#popup button {
+    font-family: "Open Sans", sans-serif;
+    display: inline-block;
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .main_part {
     flex: 1;
     display: flex;
@@ -205,6 +266,7 @@ footer {
     transition: transform 0.5s, opacity 0.5s;
     opacity: 0;
     word-wrap: break-word;
+    margin-bottom: 20px;
 
 }
 
@@ -245,7 +307,8 @@ footer {
     gap: 80px;
     align-items: center;
     justify-content: center;
-    margin-top: 150px;
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
 .button_border {
     border: solid 3px rgba(30, 2, 58, 0.78);
@@ -366,6 +429,11 @@ label[for="profile_photo"]:hover {
     margin-bottom: 8px;
     border-radius: 4px;
     border: solid 2px rgba(28, 2, 55, 0.74);
+    padding: 2px;
+    flex-direction: column;
+    overflow-x: hidden;
+    font-optical-sizing: auto;
+    font-family: "Open Sans", sans-serif;
 }
 .input_inf.error {
     border: 2px solid red;
@@ -390,6 +458,13 @@ label[for="profile_photo"]:hover {
     margin-bottom: 8px;
     height: 80px;
     border: solid 2px rgba(28, 2, 55, 0.74);
+    vertical-align: top;
+    width: 100%;
+    padding: 5px;
+    flex-direction: column;
+    font-optical-sizing: auto;
+    font-family: "Open Sans", sans-serif;
+
 }
 .char_count {
     font-size: 12px;
@@ -535,16 +610,32 @@ label[for="profile_photo"]:hover {
     cursor: pointer;
 }
 
+@media (max-width: 1300px){
 
-@media (max-width: 700px){
-    .logo_account{
-        gap: 250px;
+    .burger-menu{
+        right: 185px;
+        top: 61px;
     }
+}
+
+
+@media (max-width: 800px){
+    .logo_account{
+        gap: 200px;
+    }
+
 
     footer{
         gap: 150px;
     }
+
+    .burger-menu{
+        right: 47px;
+        top: 61px;
+    }
 }
+
+
 
 
 @media (max-width: 500px){
@@ -556,4 +647,11 @@ label[for="profile_photo"]:hover {
     footer{
         gap: 100px;
     }
+
+    .burger-menu{
+        right: 47px;
+        top: 61px;
+    }
+
+
 }

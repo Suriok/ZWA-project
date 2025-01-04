@@ -1,11 +1,16 @@
 <?php
 session_start();
-$isLoggedIn = isset($_SESSION['current_user_email']);
+
+$isLoggedIn = isset($_SESSION['current_user_email']); // Проверка авторизации
+
 function calculateAge($dateOfBirth) {
-    $dob = new DateTime($dateOfBirth);
-    $now = new DateTime();
-    $age = $now->diff($dob)->y;
-    return $age;
+    try {
+        $dob = new DateTime($dateOfBirth);
+        $now = new DateTime();
+        return $now->diff($dob)->y;
+    } catch (Exception $e) {
+        return null; // Если дата некорректна
+    }
 }
 
 $users = [];
@@ -17,6 +22,21 @@ if (file_exists($userFile)) {
         $users = []; // Если содержимое файла некорректно, используем пустой массив
     }
 }
+
+$loggedInUserHashedEmail = null;
+if ($isLoggedIn && isset($_SESSION['current_user_email'])) {
+    $loggedInUserEmail = $_SESSION['current_user_email'];
+    $loggedInUserHashedEmail = hash('sha256', $loggedInUserEmail);
+}
+
+if (isset($_GET['logout'])) {
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
+
+$isLoggedIn = isset($_SESSION['current_user_email']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,63 +48,87 @@ if (file_exists($userFile)) {
     <script src="js/card.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="logo_account">
-            <div class="logo">
-                <a class="logo" href="index.php">
-                    <img class="logo_image" alt="logo-hearte" src="foto/logo-hearte.png">
-                    <div class="logo_text">
-                        <div class="logo_text_main">FlAME</div>
-                        <div class="logo_text_small">FIND YOUR LOVE HERE</div>
-                    </div>
-                </a>
-            </div>
-            <img class="profil_image" alt="profil foto" src="foto/profile.png">
-            <div class="burger-menu" id="burgerMenu">
+<header>
+    <div class="logo_account">
+        <div class="logo">
+            <a class="logo" href="index.php">
+                <img class="logo_image" alt="logo-hearte" src="foto/logo-hearte.png">
+                <div class="logo_text">
+                    <div class="logo_text_main">FlAME</div>
+                    <div class="logo_text_small">FIND YOUR LOVE HERE</div>
+                </div>
+            </a>
+        </div>
+        <img class="profil_image" alt="profile photo" src="foto/profile.png">
+        <div class="burger-menu" id="burgerMenu">
+            <?php if (isset($_SESSION['current_user_email'])): ?>
+                <a href="account.php">Account</a>
+                <a href="index.php?logout=true">Log Out</a>
+            <?php else: ?>
                 <a href="log_in.php">Log In</a>
                 <a href="register.php">Registration</a>
-            </div>
+            <?php endif; ?>
         </div>
-        <hr class="line_header">
-    </header>
-
-    <div id="popup-overlay"></div>
-    <div id="popup">
-        <h2>You are not authorized</h2>
-        <p>Please log in or register to continue using the website.</p>
-        <button class="create_account_button" onclick="window.location.href='log_in.php'">Log In</button>
-        <button class="create_account_button" onclick="window.location.href='register.php'">Register</button>
     </div>
+    <hr class="line_header">
+</header>
 
+    <?php if (!$isLoggedIn): ?>
+        <div id="popup-overlay"></div>
+        <div id="popup">
+            <h2>You are not authorized</h2>
+            <p>Please log in or register to continue using the website.</p>
+            <button class="create_account_button" onclick="window.location.href='log_in.php'">Log In</button>
+            <button class="create_account_button" onclick="window.location.href='register.php'">Register</button>
+        </div>
+    <?php endif; ?>
+<section class="main_part">
+    <!-- Контейнер с карточками -->
+<div id="swiper">
+    <?php
+    foreach (array_reverse($users) as $user):
+        // Пропускаем карточку, если пользователь авторизован и email совпадает
+        if (
+            $isLoggedIn
+            && isset($user['email']) // Проверяем, что поле "email" существует
+            && $user['email'] === $loggedInUserHashedEmail // Сравниваем с хэшированным email
+        ) {
+            continue;
+        }
+        ?>
+        <div class="card">
 
-    <section class="main_part">
-        <div id="swiper">
-            <?php foreach (array_reverse($users) as $user): ?>
-                <div class="card">
-                    <img class="user_foto"
-                         alt="user foto"
-                         src="data:<?php echo htmlspecialchars($user['photo_mime'], ENT_QUOTES, 'UTF-8'); ?>;base64,<?php echo htmlspecialchars($user['photo'], ENT_QUOTES, 'UTF-8'); ?>"
-                    >
-                    <div class="main_part_text">
-                        <div class="name_and_age">
-                            <?php echo htmlspecialchars($user['name']); ?>, <?php echo calculateAge($user['date_birth']); ?>
-                        </div>
-                        <div class="inerests">
-                            <?php echo htmlspecialchars($user['bio']); ?>
-                        </div>
-                    </div>
+            <img class="user_foto"
+                 alt="user foto"
+                 src="data:<?php echo htmlspecialchars($user['photo_mime'], ENT_QUOTES, 'UTF-8'); ?>;base64,<?php echo htmlspecialchars($user['photo'], ENT_QUOTES, 'UTF-8'); ?>"
+            >
+
+            <div class="main_part_text">
+                <div class="name_and_age">
+                    <?php echo htmlspecialchars($user['name']); ?>,
+                    <?php echo calculateAge($user['date_birth']); ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
-        <div class="buttons_yes_no">
-            <div class="button_border">
-                <img class="button_foto_cross" alt="cross" src="foto/cross.png">
+                <div class="inerests">
+                    <?php echo htmlspecialchars($user['bio']); ?>
+                </div>
             </div>
-            <div class="button_border" data-user-id="<?php echo hash('sha256', $user['email']); ?>">
-                <img class="button_foto_heart" alt="heart" src="foto/heart.png">
+
+            <!-- ВАЖНО: кнопки внутри каждой карточки -->
+            <div class="buttons_yes_no">
+                <div class="button_border">
+                    <img class="button_foto_cross" alt="cross" src="foto/cross.png">
+                </div>
+                <div class="button_border"
+                     data-email="<?php echo htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8'); ?>">
+                    <img class="button_foto_heart" alt="heart" src="foto/heart.png">
+                </div>
             </div>
+
         </div>
-    </section>
+    <?php endforeach; ?>
+</div>
+
+</section>
     <footer>
         <div class="swip">
             <h5 class="footer_text">Swipe</h5>
