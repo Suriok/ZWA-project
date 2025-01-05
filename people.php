@@ -83,10 +83,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Список пользователей</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<header>
+    <div class="logo_account">
+        <div class="logo">
+            <a class="logo" href="index.php">
+                <img class="logo_image" alt="logo-hearte" src="foto/logo-hearte.png">
+                <div class="logo_text">
+                    <div class="logo_text_main">FlAME</div>
+                    <div class="logo_text_small">FIND YOUR LOVE HERE</div>
+                </div>
+            </a>
+        </div>
+        <img class="profil_image" alt="profile photo" src="foto/profile.png">
+        <div class="burger-menu" id="burgerMenu">
+            <?php if (isset($_SESSION['current_user_email'])): ?>
+                <a href="account.php">Account</a>
+                <a href="index.php?logout=true">Log Out</a>
+            <?php else: ?>
+                <a href="log_in.php">Log In</a>
+                <a href="register.php">Registration</a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <hr class="line_header">
+</header>
 
-<h2>your liked people</h2>
+<h1 class="text_liked">Your liked people</h1>
 <div id="likedUsersContainer">Загрузка...</div>
 
 <!-- Подключаем JS -->
@@ -134,12 +159,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     const userCard = document.createElement('div');
                     userCard.className = 'user-card';
                     userCard.innerHTML = `
-                        <img src="data:${user.photo_mime};base64,${user.photo}" alt="Фото пользователя" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 10px;">
-                        <p>Имя: ${user.name}</p>
-                        <p>Возраст: ${calculateAge(user.date_birth)}</p>
-                        <p>Био: ${user.bio}</p>
+                        <img class="user_foto" src="data:${user.photo_mime};base64,${user.photo}">
+                        <p class="name_and_age"> ${user.name},${calculateAge(user.date_birth)}</p>
+                        <p class="inerests"> ${user.bio}</p>
                     `;
                     container.appendChild(userCard);
+
                 }
             });
         } catch (e) {
@@ -162,6 +187,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Загрузим список лайков при загрузке страницы
     loadLikedUsers();
 </script>
+<footer>
+    <div class="swip">
+        <h5 class="footer_text">Swipe</h5>
+    </div>
+    <div class="people">
+        <a class="people" href="people.php">
+            <svg fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"
+                 class="image_people">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path d="M16.03,18.616l5.294-4.853a1,1,0,0,1,1.352,1.474l-6,5.5a1,1,0,0,1-1.383-.03l-3-3a1,1,0,0,1,1.414-1.414ZM1,20a9.01,9.01,0,0,1,5.623-8.337A4.981,4.981,0,1,1,10,13a7.011,7.011,0,0,0-6.929,6H10a1,1,0,0,1,0,2H2A1,1,0,0,1,1,20ZM7,8a3,3,0,1,0,3-3A3,3,0,0,0,7,8Z"></path>
+                </g>
+            </svg>
+            <h5 class="footer_text">People</h5>
+        </a>
+    </div>
+</footer>
 </body>
 </html>
-

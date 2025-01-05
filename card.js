@@ -1,3 +1,4 @@
+
 //pop up
 document.addEventListener('DOMContentLoaded', function () {
     const isLoggedIn = window.isLoggedIn; // Получаем переменную из PHP
@@ -18,136 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const swiper = document.getElementById("swiper"); // Kontejner pro karty
-    const cards = Array.from(swiper.querySelectorAll(".card")); // Všechny karty jako pole
-    let currentIndex = 0; // Index aktuální karty
-
-    const buttonHeart = document.querySelector(".button_foto_heart")?.parentElement; // Tlačítko "srdce"
-    const buttonCross = document.querySelector(".button_foto_cross")?.parentElement; // Tlačítko "křížek"
-
-    // Funkce pro aktualizaci viditelnosti karet
-    document.addEventListener('DOMContentLoaded', function () {
-        // Собираем все карточки в массив
-        const cards = document.querySelectorAll('#swiper .card');
-
-        // Одна пара кнопок (за пределами цикла)
-        const buttonHeart = document.getElementById('buttonHeart');
-        const buttonCross = document.getElementById('buttonCross');
-
-        // Индекс текущей карточки
-        let currentIndex = 0;
-
-        // Функция для обновления отображения карточек
-        function updateCards() {
-            cards.forEach((card, index) => {
-                if (index === currentIndex) {
-                    // Показываем текущую карту
-                    card.style.display = 'block';
-                    card.style.transform = 'translateY(0px)';
-                    card.style.opacity = '1';
-                    card.style.zIndex = '2';
-                } else if (index === currentIndex + 1) {
-                    // Следующую карту слегка приподнимаем
-                    card.style.display = 'block';
-                    card.style.transform = 'translateY(-15px)';
-                    card.style.opacity = '0.8';
-                    card.style.zIndex = '1';
-                } else {
-                    // Остальные скрываем
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Функция «свайпа» (уходит текущая карточка влево/вправо)
-        function showNextCard(direction) {
-            if (currentIndex >= cards.length) {
-                console.log('Все карточки уже просмотрены');
-                return;
-            }
-
-            // Текущая карточка
-            const currentCard = cards[currentIndex];
-
-            // Добавляем CSS-переход для анимации
-            currentCard.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-
-            // Определяем направление анимации
-            if (direction === 'right') {
-                currentCard.style.transform = 'translateX(100%)';
-            } else {
-                currentCard.style.transform = 'translateX(-100%)';
-            }
-            currentCard.style.opacity = '0';
-
-            // Когда анимация закончится, прячем эту карточку
-            currentCard.addEventListener('transitionend', function handler() {
-                // Удаляем обработчик сразу (чтоб не вызывался несколько раз)
-                currentCard.removeEventListener('transitionend', handler);
-
-                // Скрываем карточку полностью
-                currentCard.style.display = 'none';
-                // Сбрасываем transition, чтобы при возврате на экран карта не анимировалась резко
-                currentCard.style.transition = '';
-
-                // Переходим к следующей карточке
-                currentIndex++;
-
-                if (currentIndex < cards.length) {
-                    updateCards();
-                } else {
-                    console.log('Конец списка карточек');
-                }
-            });
-        }
-
-        // Обработчик клика на сердечко
-        buttonHeart.addEventListener('click', function () {
-            // 1. «Лайкаем» текущую карточку, если она есть
-            if (currentIndex < cards.length) {
-                const currentCard = cards[currentIndex];
-                const likedEmail = currentCard.getAttribute('data-email');
-                sendLike(likedEmail);
-            }
-            // 2. Убираем карточку анимацией (направление вправо)
-            showNextCard('right');
-        });
-
-        // Обработчик клика на крестик
-        buttonCross.addEventListener('click', function () {
-            // Можно, если нужно, что-то делать при дизлайке
-            // ...
-            // И убираем карточку анимацией (направление влево)
-            showNextCard('left');
-        });
-
-        // Функция отправки «лайка» на сервер
-        async function sendLike(email) {
-            try {
-                const response = await fetch('people.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({email: email})
-                });
-                const data = await response.json();
-                if (data.success) {
-                    console.log('Лайк отправлен, email:', email);
-                } else {
-                    console.log('Ошибка лайка:', data.message);
-                }
-            } catch (error) {
-                console.error('Ошибка при отправке лайка:', error);
-            }
-        }
-
-        // Инициализация отображения (показать первую карту и вторую)
-        updateCards();
-    });
-
-
-
-
 // Realizace Burger menu
 document.addEventListener('DOMContentLoaded', () => {
     const profileImage = document.querySelector('.profil_image'); // Кнопка открытия меню
@@ -167,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
 
 //photo adder
     function previewPhoto(event) {
@@ -221,34 +91,120 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.button_border[data-email]');
-    buttons.forEach(button => {
-        button.addEventListener('click', async function () {
-            const emailToLike = this.getAttribute('data-email');
+// funkce ktera predava like uzivatel na people,php
 
-            if (!emailToLike) {
-                alert('Email пользователя отсутствует!');
-                return;
-            }
+document.addEventListener("DOMContentLoaded", function () {
+    const swiper = document.getElementById("swiper"); // Контейнер для карточек
+    const cards = Array.from(swiper.querySelectorAll(".card")); // Все карточки как массив
+    let currentIndex = 0; // Индекс текущей карточки
 
-            try {
-                const response = await fetch('people.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailToLike })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    alert('Пользователь добавлен в список лайков!');
-                } else {
-                    alert(data.message || 'Произошла ошибка на сервере.');
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                alert('Не удалось связаться с сервером.');
+    // Функция для обновления видимости карточек
+    function updateCards() {
+        cards.forEach((card, index) => {
+            if (index === currentIndex) {
+                card.style.display = "block"; // Показать текущую карточку
+                card.style.transform = "translateY(0px)"; // Текущая карточка на месте
+                card.style.opacity = 1; // Карточка полностью видима
+                card.style.zIndex = 2; // Текущая карточка над другими
+            } else if (index === currentIndex + 1) {
+                card.style.display = "block"; // Показать следующую карточку
+                card.style.transform = "translateY(-15px)"; // Следующая карточка немного выше
+                card.style.opacity = 0.8; // Карточка слегка прозрачна
+                card.style.zIndex = 1; // Следующая карточка под текущей
+            } else {
+                card.style.display = "none"; // Скрыть остальные карточки
             }
         });
+    }
+
+    // Функция для отображения следующей карточки с анимацией
+    function showNextCard(direction, card, callback) {
+        // Анимация перемещения карточки
+        card.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+        if (direction === "right") {
+            card.style.transform = "translateX(100%)"; // Переместить вправо
+        } else if (direction === "left") {
+            card.style.transform = "translateX(-100%)"; // Переместить влево
+        }
+        card.style.opacity = 0; // Сделать карточку прозрачной
+
+        // Обработчик завершения анимации
+        card.addEventListener(
+            "transitionend",
+            function () {
+                card.style.display = "none"; // Полностью скрыть карточку после анимации
+                currentIndex++; // Переходим к следующей карточке
+
+                // Обновление видимости карточек
+                if (currentIndex < cards.length) {
+                    updateCards(); // Обновляем отображение карточек
+                } else {
+                    console.log("Кончился список карточек");
+                }
+
+                // Вызов обратного вызова, если есть
+                if (typeof callback === "function") {
+                    callback();
+                }
+            },
+            { once: true } // Обработчик срабатывает только один раз
+        );
+    }
+
+    // Обработчик для кнопки "сердце"
+    async function handleHeartClick(button, card) {
+        const emailToLike = button.getAttribute("data-email");
+
+        if (!emailToLike) {
+            alert("Email пользователя отсутствует!");
+            return;
+        }
+
+        try {
+            const response = await fetch("people.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: emailToLike }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log("Пользователь добавлен в список лайков!");
+            } else {
+                console.warn(data.message || "Произошла ошибка на сервере.");
+            }
+        } catch (error) {
+            console.error("Ошибка при отправке данных:", error);
+            alert("Не удалось связаться с сервером.");
+        } finally {
+            // Анимация карточки после попытки отправки данных
+            showNextCard("right", card);
+        }
+    }
+
+    // Обработчик для кнопки "крестик"
+    function handleCrossClick(card) {
+        showNextCard("left", card);
+    }
+
+    // Инициализация карточек после загрузки страницы
+    updateCards();
+
+    // Добавление обработчиков событий для каждой карточки
+    cards.forEach((card) => {
+        const buttonHeart = card.querySelector(".button_foto_heart")?.parentElement;
+        const buttonCross = card.querySelector(".button_foto_cross")?.parentElement;
+
+        if (buttonHeart) {
+            buttonHeart.addEventListener("click", function () {
+                handleHeartClick(buttonHeart, card);
+            });
+        }
+
+        if (buttonCross) {
+            buttonCross.addEventListener("click", function () {
+                handleCrossClick(card);
+            });
+        }
     });
 });
