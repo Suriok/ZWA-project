@@ -79,39 +79,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Список пользователей</title>
 </head>
 <body>
-<h1>Все пользователи</h1>
 
-<!--
-  Блок, где мы выводим всех пользователей (предположим,
-  что в user.json есть поля "name" и "email")
--->
-<?php foreach ($users as $user): ?>
-    <div class="user-card" style="margin-bottom: 10px;">
-        <p>Имя: <?= htmlspecialchars($user['name']); ?></p>
-        <p>Email: <?= htmlspecialchars($user['email']); ?></p>
-        <button class="button_border"
-                data-email="<?= htmlspecialchars($user['email']); ?>">
-            Поставить лайк
-        </button>
-    </div>
-<?php endforeach; ?>
-
-<hr>
-
-<h2>Ваши лайки (динамически подгруженные)</h2>
+<h2>your liked people</h2>
 <div id="likedUsersContainer">Загрузка...</div>
 
-<!-- Подключаем наш JS -->
-<script src="card.js"></script>
+<!-- Подключаем JS -->
 <script>
-    // Простая функция, которая запросит список лайков и отобразит их
+    // Функция для лайка пользователя
+    async function likeUser(email) {
+        try {
+            const response = await fetch('people.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                loadLikedUsers(); // Обновляем список лайков
+            } else {
+                alert(result.message);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Функция для загрузки лайкнутых пользователей
     async function loadLikedUsers() {
         try {
             const response = await fetch('people.php?action=get_liked');
@@ -125,15 +125,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return;
             }
 
-            // Выводим список лайкнутых email
-            likedList.forEach(email => {
-                const p = document.createElement('p');
-                p.textContent = email;
-                container.appendChild(p);
+            // Получаем данные о пользователях по email
+            const users = <?= json_encode($users, JSON_HEX_TAG); ?>;
+
+            likedList.forEach(likedEmail => {
+                const user = users.find(user => user.email === likedEmail);
+                if (user) {
+                    const userCard = document.createElement('div');
+                    userCard.className = 'user-card';
+                    userCard.innerHTML = `
+                        <img src="data:${user.photo_mime};base64,${user.photo}" alt="Фото пользователя" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 10px;">
+                        <p>Имя: ${user.name}</p>
+                        <p>Возраст: ${calculateAge(user.date_birth)}</p>
+                        <p>Био: ${user.bio}</p>
+                    `;
+                    container.appendChild(userCard);
+                }
             });
         } catch (e) {
             console.error(e);
         }
+    }
+
+    // Функция для вычисления возраста (JavaScript)
+    function calculateAge(dateOfBirth) {
+        const birthDate = new Date(dateOfBirth);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
     }
 
     // Загрузим список лайков при загрузке страницы
@@ -141,3 +164,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 </body>
 </html>
+
