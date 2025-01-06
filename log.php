@@ -1,99 +1,133 @@
 <?php
-session_start();
+session_start(); // Zahájení nové nebo obnovení existující relace
 
-$maxInactiveTime = 15 * 60; // 15 минут
+// =========================
+// Nastavení maximální doby nečinnosti
+// =========================
+$maxInactiveTime = 15 * 60; // Maximální doba nečinnosti nastavena na 15 minut
 
-// Проверка активности пользователя
+// =========================
+// Kontrola nečinnosti uživatele
+// =========================
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $maxInactiveTime) {
-    session_unset();
-    session_destroy();
-    header("Location: log_in.php");
-    exit();
+    session_unset(); // Vymazání všech dat uložených v relaci
+    session_destroy(); // Ukončení relace
+    header("Location: log_in.php"); // Přesměrování na přihlašovací stránku
+    exit(); // Ukončení skriptu
 }
 
-// Обновляем время последней активности
+// Aktualizace času poslední aktivity uživatele
 $_SESSION['last_activity'] = time();
 
-// Проверяем метод запроса
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: log_in.php');
-    exit;
+// =========================
+// Kontrola metody požadavku
+// =========================
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { // Ověření, že požadavek je metodou POST
+    header('Location: log_in.php'); // Přesměrování na přihlašovací stránku
+    exit(); // Ukončení skriptu
 }
 
-// Инициализация ошибок
+// =========================
+// Validace vstupních dat
+// =========================
+
+// Inicializace pole pro chybové zprávy
 $errors = [];
 
-// Получаем значения полей из формы
-$email = trim($_POST['email'] ?? '');
-$password = trim($_POST['password'] ?? '');
+// Získání a vyčištění vstupních údajů z formuláře
+$email = trim($_POST['email'] ?? ''); // Email uživatele
+$password = trim($_POST['password'] ?? ''); // Heslo uživatele
 
-// Проверка email
-if (empty($email)) {
-    $errors['email'] = "Email is required.";
-} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors['email'] = "Invalid email format.";
+// Validace emailu
+if (empty($email)) { // Kontrola, zda bylo zadáno pole email
+    $errors['email'] = "Email je povinný.";
+} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) { // Ověření formátu emailu
+    $errors['email'] = "Neplatný formát emailu.";
 }
 
-// Проверка пароля
-if (empty($password)) {
-    $errors['password'] = "Password is required.";
+// Validace hesla
+if (empty($password)) { // Kontrola, zda bylo zadáno pole heslo
+    $errors['password'] = "Heslo je povinné.";
 }
 
-if (empty($errors)) {
-    $filePath = 'user.json';
+// =========================
+// Přesměrování při chybách validace
+// =========================
+if (!empty($errors)) { // Pokud jsou nalezeny chyby
+    $_SESSION['errors'] = $errors; // Uložení chyb do relace
+    $_SESSION['oldValues'] = ['email' => $email]; // Uložení starých hodnot pro opětovné vyplnění formuláře
+    header('Location: log_in.php'); // Přesměrování na přihlašovací stránku
+    exit(); // Ukončení skriptu
+}
 
-    // Проверяем существование файла
-    if (file_exists($filePath)) {
-        $users = json_decode(file_get_contents($filePath), true);
+// =========================
+// Načtení uživatelských dat
+// =========================
+$filePath = 'user.json'; // Cesta k souboru uživatelů
 
-        // Проверяем, что файл содержит массив
-        if (is_array($users)) {
-            $userFound = false;
+// Kontrola, zda soubor uživatelů existuje
+if (file_exists($filePath)) {
+    $users = json_decode(file_get_contents($filePath), true); // Načtení dat ze souboru a jejich dekódování
 
-            // Хэшируем email для поиска
-            $hashedEmail = hash('sha256', $email);
+    // Kontrola, zda je obsah souboru pole
+    if (is_array($users)) {
+        $userFound = false; // Příznak, zda byl uživatel nalezen
+        $hashedEmail = hash('sha256', $email); // Vytvoření hash emailu pro porovnání
 
-            foreach ($users as $user) {
-                // Сравнение хэшированного email
-                if (isset($user['email']) && $user['email'] === $hashedEmail) {
-                    $userFound = true;
+        // =========================
+        // Hledání uživatele podle emailu
+        // =========================
+        foreach ($users as $user) {
+            if (isset($user['email']) && $user['email'] === $hashedEmail) { // Kontrola, zda email odpovídá
+                $userFound = true;
 
-                    // Проверка пароля
-                    if (isset($user['password']) && password_verify($password, $user['password'])) {
-                        // Успешный вход
-                        $_SESSION['current_user_email'] = $email;
-                        $_SESSION['user'] = [
-                            'name'       => $user['name'],
-                            'surname'    => $user['surname'],
-                            'email'       => $email,
-                            'bio'        => $user['bio'] ?? '',
-                            'photo'      => $user['photo'] ?? '',
-                            'photo_mime' => $user['photo_mime'] ?? '',
-                        ];
-                        header('Location: account.php');
-                        exit;
+                // =========================
+                // Ověření hesla
+                // =========================
+                if (isset($user['password']) && password_verify($password, $user['password'])) { // Porovnání hesla
+                    session_regenerate_id(true); // Regenerace ID relace pro zvýšení bezpečnosti
+
+                    // Uložení informací o uživateli do relace
+                    $_SESSION['current_user_email'] = $email;
+                    $_SESSION['user'] = [
+                        'name'        => $user['name'], // Jméno uživatele
+                        'surname'     => $user['surname'], // Příjmení uživatele
+                        'email'       => $email, // Email uživatele
+                        'bio'         => $user['bio'] ?? '', // Bio uživatele
+                        'photo'       => $user['photo'] ?? '', // Fotografie uživatele
+                        'photo_mime'  => $user['photo_mime'] ?? '', // MIME typ fotografie
+                        'is_admin'    => $user['is_admin'] ?? false, // Příznak administrátora
+                    ];
+
+                    // Přesměrování na odpovídající stránku podle role uživatele
+                    if ($_SESSION['user']['is_admin']) {
+                        header('Location: admin.php'); // Administrátor
                     } else {
-                        $errors['password'] = "Incorrect email or password.";
-                        break;
+                        header('Location: account.php'); // Běžný uživatel
                     }
+                    exit();
+                } else {
+                    $errors['password'] = "Nesprávný email nebo heslo."; // Nesprávné heslo
+                    break;
                 }
             }
+        }
 
-            if (!$userFound) {
-                $errors['email'] = "Incorrect email or password.";
-            }
-        } else {
-            $errors['general'] = "The user file is corrupted.";
+        if (!$userFound) { // Pokud nebyl uživatel nalezen
+            $errors['email'] = "Nesprávný email nebo heslo.";
         }
     } else {
-        $errors['general'] = "The user file does not exist.";
+        $errors['general'] = "Soubor s uživateli je poškozen."; // Chyba v souboru uživatelů
     }
+} else {
+    $errors['general'] = "Soubor s uživateli neexistuje."; // Soubor neexistuje
 }
 
-// Сохраняем ошибки и старые данные
-$_SESSION['errors'] = $errors;
-$_SESSION['oldValues'] = $_POST;
-
-// Перенаправление обратно на страницу входа
-header('Location: log_in.php');
-exit;
+// =========================
+// Přesměrování při chybách přihlášení
+// =========================
+$_SESSION['errors'] = $errors; // Uložení chyb do relace
+$_SESSION['oldValues'] = ['email' => $email]; // Uložení starých hodnot formuláře
+header('Location: log_in.php'); // Přesměrování na přihlašovací stránku
+exit(); // Ukončení skriptu
+?>
