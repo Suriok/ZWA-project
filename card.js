@@ -1,23 +1,33 @@
-
-//pop up
+// pop up
 document.addEventListener('DOMContentLoaded', function () {
     const isLoggedIn = window.isLoggedIn; // Получаем переменную из PHP
 
     if (!isLoggedIn) {
         const popup = document.getElementById('popup');
         const overlay = document.getElementById('popup-overlay');
+        const loginButton = document.querySelector('.login-button');
+        const registerButton = document.querySelector('.register-button');
 
         // Показываем popup и overlay
         popup.style.display = 'block';
         overlay.style.display = 'block';
 
-        // Закрытие по клику на overlay
-        overlay.addEventListener('click', () => {
-            popup.style.display = 'none';
-            overlay.style.display = 'none';
-        });
+        // Добавляем обработчик для кнопки "Log In"
+        if (loginButton) {
+            loginButton.addEventListener('click', () => {
+                window.location.href = 'log_in.php';
+            });
+        }
+
+        // Добавляем обработчик для кнопки "Register"
+        if (registerButton) {
+            registerButton.addEventListener('click', () => {
+                window.location.href = 'register.php';
+            });
+        }
     }
 });
+
 
 // Realizace Burger menu
 document.addEventListener('DOMContentLoaded', () => {
@@ -91,8 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// funkce ktera predava like uzivatel na people,php
-
 document.addEventListener("DOMContentLoaded", function () {
     const swiper = document.getElementById("swiper"); // Контейнер для карточек
     const cards = Array.from(swiper.querySelectorAll(".card")); // Все карточки как массив
@@ -133,7 +141,13 @@ document.addEventListener("DOMContentLoaded", function () {
             "transitionend",
             function () {
                 card.style.display = "none"; // Полностью скрыть карточку после анимации
-                currentIndex++; // Переходим к следующей карточке
+
+                if (direction === "left") {
+                    // Перемещаем карточку в конец списка
+                    cards.push(cards.splice(currentIndex, 1)[0]);
+                } else {
+                    currentIndex++; // Переходим к следующей карточке
+                }
 
                 // Обновление видимости карточек
                 if (currentIndex < cards.length) {
@@ -206,5 +220,62 @@ document.addEventListener("DOMContentLoaded", function () {
                 handleCrossClick(card);
             });
         }
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const bioForm = document.getElementById('bioForm');
+    const bioTextarea = document.getElementById('bio');
+    const bioMessage = document.getElementById('bioMessage');
+
+    if (!bioForm) {
+        console.error("Форма 'bioForm' не найдена.");
+        return;
+    }
+
+    bioForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Предотвращаем стандартную отправку формы
+
+        const bio = bioTextarea.value.trim();
+        console.log("Отправка био:", bio); // Отладка
+
+        // Проверка длины био (например, не более 500 символов)
+        if (bio.length > 500) {
+            bioMessage.textContent = 'Био не должно превышать 500 символов.';
+            bioMessage.style.color = 'red';
+            console.log("Био превышает допустимую длину."); // Отладка
+            return;
+        }
+
+        // Отправка AJAX-запроса для обновления био
+        fetch('account.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'action': 'update_bio',
+                'bio': bio
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Ответ сервера:", data); // Отладка
+                if (data.success) {
+                    bioMessage.textContent = data.message;
+                    bioMessage.style.color = 'green';
+                    // Обновляем textarea с экранированным био
+                    bioTextarea.value = data.bio;
+                } else {
+                    bioMessage.textContent = data.message;
+                    bioMessage.style.color = 'red';
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                bioMessage.textContent = 'Произошла ошибка при обновлении био.';
+                bioMessage.style.color = 'red';
+            });
     });
 });
