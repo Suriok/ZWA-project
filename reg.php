@@ -1,118 +1,146 @@
 <?php
-session_start(); // Zahájení relace pro ukládání dat o chybách a starých hodnotách formuláře
+session_start(); // Zahájení relace pro uložení chyb a starých hodnot z formuláře
 
-$errors = []; // Inicializace pole pro ukládání chyb při validaci
-$oldValues = []; // Inicializace pole pro ukládání starých hodnot z formuláře
+$errors = [];    // Pole pro chyby
+$oldValues = []; // Pole pro staré hodnoty z formuláře
 
 // ============================
 // Kontrola metody požadavku
 // ============================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Kontrola, zda byl požadavek odeslán metodou POST
-    // Získání a očištění dat z formuláře
-    $name = trim($_POST['name'] ?? ''); // Jméno
-    $surname = trim($_POST['surname'] ?? ''); // Příjmení
-    $email = trim($_POST['email'] ?? ''); // Email
-    $password = trim($_POST['password'] ?? ''); // Heslo
-    $confirmPassword = trim($_POST['confirm_password'] ?? ''); // Potvrzení hesla
-    $date_birth = trim($_POST['date_birth'] ?? ''); // Datum narození
-    $gender = trim($_POST['gender'] ?? ''); // Pohlaví
-    $bio = trim($_POST['bio'] ?? ''); // Biografie
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Získání polí z $_POST
+    $name            = trim($_POST['name'] ?? '');
+    $surname         = trim($_POST['surname'] ?? '');
+    $email           = trim($_POST['email'] ?? '');
+    $password        = trim($_POST['password'] ?? '');
+    $confirmPassword = trim($_POST['confirm_password'] ?? '');
+    $date_birth      = trim($_POST['date_birth'] ?? '');
+    $gender          = trim($_POST['gender'] ?? '');
+    $bio             = trim($_POST['bio'] ?? '');
 
-    $oldValues = $_POST; // Uložení starých hodnot pro opětovné vyplnění formuláře
+    // Uložení starých hodnot pro opětovné vyplnění
+    $oldValues = $_POST;
 
     // ============================
-    // Validace dat z formuláře
+    // Validace polí
     // ============================
 
-    // Validace jména
-    if (empty($name)) {
-        $errors['name'] = "Jméno je povinné."; // Jméno je povinné
+    // Jméno
+    if ($name === '') {
+        $errors['name'] = "Jméno je povinné.";
     } elseif (!preg_match('/^[a-zA-Z]+$/', $name)) {
-        $errors['name'] = "Jméno může obsahovat pouze latinská písmena."; // Pouze latinská písmena
+        $errors['name'] = "Jméno může obsahovat pouze latinská písmena.";
     }
 
-    // Validace příjmení
-    if (empty($surname)) {
-        $errors['surname'] = "Příjmení je povinné."; // Příjmení je povinné
+    // Příjmení
+    if ($surname === '') {
+        $errors['surname'] = "Příjmení je povinné.";
     } elseif (!preg_match('/^[a-zA-Z]+$/', $surname)) {
-        $errors['surname'] = "Příjmení může obsahovat pouze latinská písmena."; // Pouze latinská písmena
+        $errors['surname'] = "Příjmení může obsahovat pouze latinská písmena.";
     }
 
-    // Validace emailu
-    if (empty($email)) {
-        $errors['email'] = "Email je povinný."; // Email je povinný
+    // Email
+    if ($email === '') {
+        $errors['email'] = "Email je povinný.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = "Neplatný formát emailu."; // Neplatný formát emailu
+        $errors['email'] = "Neplatný formát emailu.";
     }
 
-    // Validace hesla
-    if (empty($password)) {
-        $errors['password'] = "Heslo je povinné."; // Heslo je povinné
+    // Heslo
+    if ($password === '') {
+        $errors['password'] = "Heslo je povinné.";
     } elseif (strlen($password) < 4) {
-        $errors['password'] = "Heslo musí mít alespoň 4 znaky."; // Minimální délka hesla je 4 znaky
+        $errors['password'] = "Heslo musí mít alespoň 4 znaky.";
     }
 
-    // Kontrola potvrzení hesla
+    // Potvrzení hesla
     if ($password !== $confirmPassword) {
-        $errors['confirm_password'] = "Hesla se neshodují."; // Hesla se neshodují
+        $errors['confirm_password'] = "Hesla se neshodují.";
     }
 
-    // Validace data narození
-    if (empty($date_birth)) {
-        $errors['date_birth'] = "Datum narození je povinné."; // Datum narození je povinné
+    // Datum narození
+    if ($date_birth === '') {
+        $errors['date_birth'] = "Datum narození je povinné.";
     } else {
-        $birthDate = new DateTime($date_birth); // Převod data narození na objekt DateTime
-        $currentDate = new DateTime(); // Získání aktuálního data
-        $age = $currentDate->diff($birthDate)->y; // Výpočet věku
+        $birthDate   = new DateTime($date_birth);
+        $currentDate = new DateTime();
+        $age         = $currentDate->diff($birthDate)->y;
         if ($age < 18) {
-            $errors['date_birth'] = "Musíte být starší 18 let."; // Minimální věk je 18 let
+            $errors['date_birth'] = "Musíte být starší 18 let.";
         }
     }
 
-    // Validace pohlaví
-    if (empty($gender)) {
-        $errors['gender'] = "Pohlaví je povinné."; // Pohlaví je povinné
+    // Pohlaví
+    if ($gender === '') {
+        $errors['gender'] = "Pohlaví je povinné.";
     }
 
-    // Validace profilové fotografie
+    // Profilová fotografie
     if (!isset($_FILES['profile_photo']) || $_FILES['profile_photo']['error'] !== UPLOAD_ERR_OK) {
-        $errors['profile_photo'] = "Profilová fotografie je povinná."; // Profilová fotografie je povinná
+        $errors['profile_photo'] = "Profilová fotografie je povinná.";
     } else {
-        // Kontrola nahraného souboru
         if (!file_exists($_FILES['profile_photo']['tmp_name'])) {
-            $errors['profile_photo'] = "Neplatný soubor."; // Neplatný soubor
+            $errors['profile_photo'] = "Neplatný soubor.";
         } else {
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif']; // Povolené typy souborů
-            $photoMimeType = mime_content_type($_FILES['profile_photo']['tmp_name']); // Zjištění typu souboru
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $photoMimeType    = mime_content_type($_FILES['profile_photo']['tmp_name']);
             if ($photoMimeType === false) {
-                $errors['profile_photo'] = "Neplatný soubor."; // Neplatný typ souboru
+                $errors['profile_photo'] = "Neplatný soubor.";
             } elseif (!in_array($photoMimeType, $allowedMimeTypes)) {
-                $errors['profile_photo'] = "Jsou povoleny pouze soubory JPG, PNG nebo GIF."; // Povolené typy
+                $errors['profile_photo'] = "Jsou povoleny pouze soubory JPG, PNG nebo GIF.";
             }
         }
     }
 
     // ============================
-    // Zpracování dat po validaci
+    // Pokud zatím nejsou chyby, kontrola,
+    // zda heslo a email už neexistují
     // ============================
-    if (empty(array_filter($errors))) { // Pokud nejsou žádné chyby
-        $filePath = 'user.json'; // Cesta k souboru uživatelů
-        $users = file_exists($filePath) ? json_decode(file_get_contents($filePath), true) : []; // Načtení existujících uživatelů
+    if (empty($errors)) {
+        // Cesta k souboru s uživateli
+        $filePath = 'user.json';
+        $users    = file_exists($filePath) ? json_decode(file_get_contents($filePath), true) : [];
         if (!is_array($users)) {
-            $users = []; // Pokud je soubor poškozený, vytvoříme nové pole
+            $users = [];
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT); // Hashování hesla
-        $hashedEmail = hash('sha256', $email); // Hashování emailu
-        $photoData = file_get_contents($_FILES['profile_photo']['tmp_name']); // Načtení dat z fotografie
-        $photoBase64 = base64_encode($photoData); // Převod dat do Base64
+        // Hash emailu a hesla (SHA-256)
+        $hashedEmail    = hash('sha256', $email);
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        // Vytvoření nového uživatele
+        // 1) Kontrola, zda email (v SHA-256) už v databázi neexistuje
+        foreach ($users as $existingUser) {
+            if (isset($existingUser['email']) && $existingUser['email'] === $hashedEmail) {
+                $errors['email'] = "Tento email už existuje. Zvolte jiný email.";
+                break;
+            }
+        }
+
+        // 2) Kontrola, zda heslo (v SHA-256) už v databázi neexistuje
+        if (empty($errors)) {
+            foreach ($users as $existingUser) {
+                if (isset($existingUser['password']) && $existingUser['password'] === $hashedPassword) {
+                    $errors['password'] = "Tento heslový hash již existuje. Zvolte jiné heslo.";
+                    break;
+                }
+            }
+        }
+    }
+
+    // ============================
+    // Uložení / nebo vrácení s chybami
+    // ============================
+    if (empty($errors)) {
+        // Pokud nejsou chyby, uložíme uživatele
+        $photoData     = file_get_contents($_FILES['profile_photo']['tmp_name']);
+        $photoBase64   = base64_encode($photoData);
+        $photoMimeType = mime_content_type($_FILES['profile_photo']['tmp_name']);
+
         $newUser = [
             'name'        => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
             'surname'     => htmlspecialchars($surname, ENT_QUOTES, 'UTF-8'),
-            'email'       => $hashedEmail,
-            'password'    => $hashedPassword,
+            'email'       => $hashedEmail,      // hash emailu
+            'password'    => $hashedPassword,   // hash hesla (SHA-256)
             'gender'      => htmlspecialchars($gender, ENT_QUOTES, 'UTF-8'),
             'bio'         => $bio,
             'is_admin'    => false,
@@ -121,18 +149,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // Kontrola, zda byl požadavek ode
             'photo_mime'  => $photoMimeType
         ];
 
-        $users[] = $newUser; // Přidání uživatele do pole
-        file_put_contents($filePath, json_encode($users, JSON_PRETTY_PRINT)); // Uložení dat do souboru
+        // Přidáme do pole a uložíme do user.json
+        $users[] = $newUser;
+        file_put_contents($filePath, json_encode($users, JSON_PRETTY_PRINT));
 
-        header('Location: log_in.php'); // Přesměrování na přihlašovací stránku
+        // Přesměrování na log_in.php
+        header('Location: log_in.php');
         exit();
     }
 
-    // Uložení chyb a starých hodnot do relace
-    $_SESSION['errors'] = $errors;
+    // Pokud se vyskytly chyby, uložíme je do SESSION a vrátíme se
+    $_SESSION['errors']    = $errors;
     $_SESSION['oldValues'] = $oldValues;
-
-    header('Location: register.php'); // Přesměrování zpět na registrační formulář
+    header('Location: register.php');
     exit();
 }
 ?>

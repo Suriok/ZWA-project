@@ -58,15 +58,19 @@ unset($_SESSION['errors'], $_SESSION['oldValues']); // Vymazání chyb a starýc
             <div class="form">
                 <!-- Pole pro zadání emailu -->
                 <label for="email" class="information_text">Email</label>
+                <!-- Pole pro email, povinné, ověřuje správný formát emailové adresy -->
                 <input class="input_inf" id="email" type="email" name="email" placeholder="johndoe@gmail.com"
-                       value="<?php echo htmlspecialchars($oldValues['email'] ?? ''); ?>"> <!-- Předvyplnění staré hodnoty emailu -->
-                <span class="error_message"><?php echo htmlspecialchars($errors['email'] ?? ''); ?></span> <!-- Zobrazení chybové zprávy pro email -->
+                       value="<?php echo htmlspecialchars($oldValues['email'] ?? ''); ?>" required>
+                <!-- Zobrazení chybové zprávy, pokud email není zadaný nebo je ve špatném formátu -->
+                <span class="error_message"><?php echo htmlspecialchars($errors['email'] ?? ''); ?></span>
             </div>
             <div class="form">
                 <!-- Pole pro zadání hesla -->
                 <label for="password" class="information_text">Password</label>
-                <input class="input_inf" id="password" type="password" name="password">
-                <span class="error_message"><?php echo htmlspecialchars($errors['password'] ?? ''); ?></span> <!-- Zobrazení chybové zprávy pro heslo -->
+                <!-- Pole pro heslo, povinné -->
+                <input class="input_inf" id="password" type="password" name="password" required>
+                <!-- Zobrazení chybové zprávy, pokud heslo není zadané -->
+                <span class="error_message"><?php echo htmlspecialchars($errors['password'] ?? ''); ?></span>
             </div>
             <div class="information_button">
                 <!-- Tlačítko pro odeslání přihlašovacího formuláře -->

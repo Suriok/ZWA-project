@@ -1,104 +1,111 @@
 <?php
 session_start();
-$isLoggedIn = isset($_SESSION['current_user_email']);
+// ====================
+// Kontrola autorizace
+// ====================
+$isLoggedIn = isset($_SESSION['current_user_email']); // Zda je uživatel přihlášen
 
-// 1) Проверка авторизации
+// Pokud uživatel není přihlášen, přesměrujeme ho na přihlašovací stránku
 if (!isset($_SESSION['current_user_email'])) {
     header('Location: log_in.php');
     exit();
 }
 
-// 2) Пути к файлам
-$userFilePath = 'user.json';
-$likedFile    = 'liked_users.json';
+// ====================
+// Cesty k souborům
+// ====================
+$userFilePath = 'user.json'; // Cesta k souboru s uživateli
+$likedFile    = 'liked_users.json'; // Cesta k souboru s "lajknutými" uživateli
 
-$loggedInUserHashedEmail = null; // Hash uzivatelskeho emailu
-$isAdmin = false; // Priznak, zda je uzivatel admin
+$loggedInUserHashedEmail = null; // Hash přihlášeného emailu
+$isAdmin = false; // Příznak, zda je uživatel administrátor
 if ($isLoggedIn && isset($_SESSION['user']['email'])) {
-    $loggedInUserEmail = $_SESSION['user']['email']; // Nacteni emailu prihlaseneho uzivatele
-    $loggedInUserHashedEmail = hash('sha256', $loggedInUserEmail); // Hashovani emailu
-    $isAdmin = $_SESSION['user']['is_admin'] ?? false; // Kontrola, zda je uzivatel admin
+    $loggedInUserEmail = $_SESSION['user']['email']; // Email aktuálně přihlášeného uživatele
+    $loggedInUserHashedEmail = hash('sha256', $loggedInUserEmail); // Hash emailu
+    $isAdmin = $_SESSION['user']['is_admin'] ?? false; // Zda je uživatel admin
 }
-// 3) Загрузка всех пользователей (из user.json)
+
+// ====================
+// Načtení uživatelů z JSON souboru
+// ====================
 $users = [];
 if (file_exists($userFilePath)) {
-    $dataFromFile = json_decode(file_get_contents($userFilePath), true);
+    $dataFromFile = json_decode(file_get_contents($userFilePath), true); // Načtení dat
     if (is_array($dataFromFile)) {
         $users = $dataFromFile;
     }
 }
 
-// 4) Загрузка списка «лайкнутых» пользователей (из liked_users.json)
+// ====================
+// Načtení "lajknutých" uživatelů
+// ====================
 $likedUsers = [];
 if (file_exists($likedFile)) {
-    $likedFromFile = json_decode(file_get_contents($likedFile), true);
+    $likedFromFile = json_decode(file_get_contents($likedFile), true); // Načtení dat
     if (is_array($likedFromFile)) {
         $likedUsers = $likedFromFile;
     }
 }
 
-// 5) Текущий (plain) email пользователя
+// ====================
+// Email aktuálního uživatele
+// ====================
 $currentUserEmail = $_SESSION['current_user_email'] ?? '';
 
 // ---------------------
-// Если POST — значит пришёл запрос на лайк (email)
+// POST: Přidání uživatele do seznamu "lajků"
 // ---------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $rawData = file_get_contents('php://input');
+    $rawData = file_get_contents('php://input'); // Získání dat z těla požadavku
     $data    = json_decode($rawData, true);
 
-    if (!empty($data['email'])) {
+    if (!empty($data['email'])) { // Kontrola, zda byl odeslán email
         $likedEmail = htmlspecialchars($data['email']);
 
-        // Инициализируем массив, если нет
+        // Pokud pro uživatele neexistuje seznam lajků, inicializujeme ho
         if (!isset($likedUsers[$currentUserEmail])) {
             $likedUsers[$currentUserEmail] = [];
         }
 
-        // Добавляем email в список, если его там ещё нет
+        // Přidání uživatele do seznamu, pokud ještě neexistuje
         if (!in_array($likedEmail, $likedUsers[$currentUserEmail], true)) {
             $likedUsers[$currentUserEmail][] = $likedEmail;
         }
 
-        // Сохраняем
+        // Uložení aktualizovaných dat do souboru
         file_put_contents($likedFile, json_encode($likedUsers, JSON_PRETTY_PRINT));
 
         echo json_encode([
             'success' => true,
-            'message' => "Пользователь с email {$likedEmail} добавлен в лайки."
+            'message' => "Uživatel s emailem {$likedEmail} byl přidán do lajků."
         ]);
     } else {
         echo json_encode([
             'success' => false,
-            'message' => 'Email для лайка не передан.'
+            'message' => 'Email pro lajknutí nebyl odeslán.'
         ]);
     }
     exit();
 }
 
 // ---------------------
-// Если GET c ?action=get_liked — отдаём ЛАЙКНУТЫХ c ПАГИНАЦИЕЙ
+// GET: Načtení lajknutých uživatelů s podporou stránkování
 // ---------------------
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'get_liked') {
-    // Массив хэшей email, которых лайкнул текущий пользователь
-    $allLikedList = $likedUsers[$currentUserEmail] ?? [];
+    $allLikedList = $likedUsers[$currentUserEmail] ?? []; // Získání všech lajknutých uživatelů
 
-    // ПАГИНАЦИЯ: 3 элемента на страницу
+    // Nastavení stránkování: počet uživatelů na stránku
     $itemsPerPage = 3;
-    $totalLiked   = count($allLikedList);
+    $totalLiked   = count($allLikedList); // Celkový počet lajků
     $totalPages   = ($totalLiked > 0) ? ceil($totalLiked / $itemsPerPage) : 1;
 
-    // Какая страница запрошена
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Aktuální stránka
     if ($page < 1) $page = 1;
     if ($page > $totalPages) $page = $totalPages;
 
-    // Индекс начала
-    $startIndex = ($page - 1) * $itemsPerPage;
-    // Выбираем ровно 3 (или меньше на последней)
-    $likedListPage = array_slice($allLikedList, $startIndex, $itemsPerPage);
+    $startIndex = ($page - 1) * $itemsPerPage; // Výpočet začátku
+    $likedListPage = array_slice($allLikedList, $startIndex, $itemsPerPage); // Výběr dat pro aktuální stránku
 
-    // Отправляем JSON
     echo json_encode([
         'page'       => $page,
         'totalPages' => $totalPages,
@@ -110,14 +117,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <!-- Metadata stránky -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flame - Your Liked People</title>
+    <!-- Odkaz na externí CSS styl -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- Nastavení ikony stránky -->
     <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48"/>
-    <!-- Подключаем внешний JS-файл со всем кодом, который раньше был в <script> -->
+    <!-- Skripty pro dynamické načítání lajknutých uživatelů -->
     <script>
-        // Передаём всех пользователей (из user.json) в window.users
+        // Přenos uživatelů (z PHP do JavaScriptu)
         window.users = <?= json_encode($users, JSON_HEX_TAG); ?>;
     </script>
     <script src="js/loadLikedUsers.js" defer></script>
@@ -125,8 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 </head>
 <body>
 <header>
-    <!-- Hlavicka stranky obsahujici logo a menu -->
+
+    <!-- Hlavička stránky -->
     <div class="header-container">
+        <!-- Logo aplikace -->
         <div class="header-logo">
             <a class="header-logo" href="index.php">
                 <img class="logo_image" alt="logo-hearte" src="foto/logo-hearte.png">
@@ -136,8 +148,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
                 </div>
             </a>
         </div>
+        <!-- Profilová fotografie -->
         <img class="profil_image" alt="profile photo" src="foto/profile.png">
+        <!-- Navigační menu -->
         <div class="burger-menu" id="burgerMenu">
+            <!-- Odkazy v menu pro přihlášené i nepřihlášené uživatele -->
             <?php if ($isLoggedIn): ?>
                 <a href="account.php">Account</a>
                 <?php if ($isAdmin): ?>
@@ -153,11 +168,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     <hr class="line_header">
 </header>
 
+<!-- Hlavní nadpis stránky -->
 <h1 class="text_liked">Your Liked People</h1>
 
-<!-- Контейнер для карточек -->
-<div id="likedUsersContainer">Загрузка...</div>
-<!-- Контейнер для пагинации (ссылок на страницы) -->
+<!-- Kontejner pro zobrazení lajknutých uživatelů -->
+<div id="likedUsersContainer">Download...</div>
+<!-- Kontejner pro stránkování -->
 <div id="paginationContainer"></div>
 
 <footer>
