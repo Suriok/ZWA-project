@@ -8,7 +8,16 @@ $oldValues = []; // Pole pro staré hodnoty z formuláře
 // Kontrola metody požadavku
 // ============================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Získání polí z $_POST
+    /**
+     *
+     * Získání polí z formuláře.
+     *
+     * Zpracovává vstupní hodnoty odeslané metodou POST a odstraňuje přebytečné mezery.
+     *
+     * @param array $_POST Data odeslaná formulářem.
+     * @return void
+     *
+     */
     $name            = trim($_POST['name'] ?? '');
     $surname         = trim($_POST['surname'] ?? '');
     $email           = trim($_POST['email'] ?? '');
@@ -25,40 +34,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validace polí
     // ============================
 
-    // Jméno
+    /**
+     *
+     * Validace jména.
+     *
+     * Kontroluje, zda jméno není prázdné a obsahuje pouze latinská písmena.
+     *
+     * @param string $name Jméno zadané uživatelem.
+     * @return void
+     *
+     */
     if ($name === '') {
         $errors['name'] = "Jméno je povinné.";
     } elseif (!preg_match('/^[a-zA-Z]+$/', $name)) {
         $errors['name'] = "Jméno může obsahovat pouze latinská písmena.";
     }
 
-    // Příjmení
+    /**
+     *
+     * Validace příjmení.
+     *
+     * Kontroluje, zda příjmení není prázdné a obsahuje pouze latinská písmena.
+     *
+     * @param string $surname Příjmení zadané uživatelem.
+     * @return void
+     *
+     */
     if ($surname === '') {
         $errors['surname'] = "Příjmení je povinné.";
     } elseif (!preg_match('/^[a-zA-Z]+$/', $surname)) {
         $errors['surname'] = "Příjmení může obsahovat pouze latinská písmena.";
     }
 
-    // Email
+    /**
+     *
+     * Validace emailu.
+     *
+     * Ověřuje, zda je email vyplněn a má platný formát.
+     *
+     * @param string $email Emailová adresa zadaná uživatelem.
+     * @return void
+     *
+     */
     if ($email === '') {
         $errors['email'] = "Email je povinný.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Neplatný formát emailu.";
     }
 
-    // Heslo
+    /**
+     *
+     * Validace hesla.
+     *
+     * Kontroluje, zda heslo není prázdné a splňuje minimální délku.
+     *
+     * @param string $password Heslo zadané uživatelem.
+     * @return void
+     *
+     */
     if ($password === '') {
         $errors['password'] = "Heslo je povinné.";
     } elseif (strlen($password) < 4) {
         $errors['password'] = "Heslo musí mít alespoň 4 znaky.";
     }
 
-    // Potvrzení hesla
+    /**
+     *
+     * Kontrola potvrzení hesla.
+     *
+     * Ověřuje, zda zadané heslo odpovídá potvrzenému heslu.
+     *
+     * @param string $password Heslo zadané uživatelem.
+     * @param string $confirmPassword Potvrzené heslo.
+     * @return void
+     *
+     */
     if ($password !== $confirmPassword) {
         $errors['confirm_password'] = "Hesla se neshodují.";
     }
 
-    // Datum narození
+    /**
+     *
+     * Validace data narození.
+     *
+     * Ověřuje, zda je datum narození zadáno a uživatel je starší 18 let.
+     *
+     * @param string $date_birth Datum narození zadané uživatelem.
+     * @return void
+     *
+     */
     if ($date_birth === '') {
         $errors['date_birth'] = "Datum narození je povinné.";
     } else {
@@ -70,12 +134,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Pohlaví
+    /**
+     *
+     * Validace pohlaví.
+     *
+     * Kontroluje, zda uživatel vybral pohlaví.
+     *
+     * @param string $gender Pohlaví zadané uživatelem.
+     * @return void
+     *
+     */
     if ($gender === '') {
         $errors['gender'] = "Pohlaví je povinné.";
     }
 
-    // Profilová fotografie
+    /**
+     *
+     * Validace profilové fotografie.
+     *
+     * Ověřuje, zda byla nahrána fotografie a má povolený formát.
+     *
+     * @param array $_FILES Nahraná fotografie uživatele.
+     * @return void
+     *
+     */
     if (!isset($_FILES['profile_photo']) || $_FILES['profile_photo']['error'] !== UPLOAD_ERR_OK) {
         $errors['profile_photo'] = "Profilová fotografie je povinná.";
     } else {
@@ -96,19 +178,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Pokud zatím nejsou chyby, kontrola,
     // zda heslo a email už neexistují
     // ============================
+    /**
+     *
+     * Kontrola existujících uživatelů.
+     *
+     * Ověřuje, zda email nebo heslo již neexistují v databázi.
+     *
+     * @param string $email Emailová adresa uživatele.
+     * @param string $password Heslo uživatele.
+     * @return void
+     *
+     */
     if (empty($errors)) {
-        // Cesta k souboru s uživateli
         $filePath = 'user.json';
         $users    = file_exists($filePath) ? json_decode(file_get_contents($filePath), true) : [];
         if (!is_array($users)) {
             $users = [];
         }
 
-        // Hash emailu a hesla (SHA-256)
         $hashedEmail    = hash('sha256', $email);
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        // 1) Kontrola, zda email (v SHA-256) už v databázi neexistuje
         foreach ($users as $existingUser) {
             if (isset($existingUser['email']) && $existingUser['email'] === $hashedEmail) {
                 $errors['email'] = "Tento email už existuje. Zvolte jiný email.";
@@ -116,7 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // 2) Kontrola, zda heslo (v SHA-256) už v databázi neexistuje
         if (empty($errors)) {
             foreach ($users as $existingUser) {
                 if (isset($existingUser['password']) && $existingUser['password'] === $hashedPassword) {
@@ -130,8 +219,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ============================
     // Uložení / nebo vrácení s chybami
     // ============================
+    /**
+     *
+     * Uložení nového uživatele.
+     *
+     * Pokud nejsou chyby, uživatel je přidán do databáze a přesměrován na přihlašovací stránku.
+     *
+     * @param array $newUser Data nového uživatele.
+     * @return void
+     *
+     */
     if (empty($errors)) {
-        // Pokud nejsou chyby, uložíme uživatele
         $photoData     = file_get_contents($_FILES['profile_photo']['tmp_name']);
         $photoBase64   = base64_encode($photoData);
         $photoMimeType = mime_content_type($_FILES['profile_photo']['tmp_name']);
@@ -139,8 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newUser = [
             'name'        => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
             'surname'     => htmlspecialchars($surname, ENT_QUOTES, 'UTF-8'),
-            'email'       => $hashedEmail,      // hash emailu
-            'password'    => $hashedPassword,   // hash hesla (SHA-256)
+            'email'       => $hashedEmail,
+            'password'    => $hashedPassword,
             'gender'      => htmlspecialchars($gender, ENT_QUOTES, 'UTF-8'),
             'bio'         => $bio,
             'is_admin'    => false,
@@ -149,19 +247,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'photo_mime'  => $photoMimeType
         ];
 
-        // Přidáme do pole a uložíme do user.json
         $users[] = $newUser;
         file_put_contents($filePath, json_encode($users, JSON_PRETTY_PRINT));
 
-        // Přesměrování na log_in.php
         header('Location: log_in.php');
         exit();
     }
 
-    // Pokud se vyskytly chyby, uložíme je do SESSION a vrátíme se
     $_SESSION['errors']    = $errors;
     $_SESSION['oldValues'] = $oldValues;
     header('Location: register.php');
     exit();
 }
 ?>
+

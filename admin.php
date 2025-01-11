@@ -40,9 +40,15 @@ $hashedEmail = hash('sha256', $user['email'] ?? ''); // Hash emailu aktuálního
 // ============================
 $usersFile = 'user.json'; // Cesta k souboru JSON obsahujícího informace o uživatelích
 
-// ============================
-// Funkce pro načtení uživatelů
-// ============================
+/**
+ * Načítá seznam uživatelů ze souboru.
+ *
+ * Tato funkce kontroluje, zda existuje soubor s uživateli,
+ * a pokud ano, dekóduje jeho obsah jako pole.
+ *
+ * @param string $usersFile Cesta k souboru JSON obsahujícího uživatele.
+ * @return array Pole uživatelů nebo prázdné pole, pokud soubor není validní nebo neexistuje.
+ */
 function loadUsers($usersFile) {
     if (file_exists($usersFile)) { // Kontrola, zda soubor existuje
         $users = json_decode(file_get_contents($usersFile), true); // Načtení obsahu souboru a dekódování JSON
@@ -53,9 +59,15 @@ function loadUsers($usersFile) {
     return []; // Pokud soubor neexistuje nebo není validní, vrací prázdné pole
 }
 
-// ============================
-// Funkce pro uložení uživatelů
-// ============================
+/**
+ * Ukládá aktualizovaný seznam uživatelů do souboru.
+ *
+ * Tato funkce zapisuje seznam uživatelů do souboru JSON.
+ *
+ * @param string $usersFile Cesta k souboru JSON.
+ * @param array $users Aktualizovaný seznam uživatelů.
+ * @return bool Vrácí `true` při úspěchu nebo `false` při chybě.
+ */
 function saveUsers($usersFile, $users) {
     return file_put_contents($usersFile, json_encode($users, JSON_PRETTY_PRINT)) !== false; // Uložení dat do souboru
 }
@@ -66,6 +78,11 @@ $users = loadUsers($usersFile); // Načtení seznamu uživatelů z JSON souboru
 // ============================
 // Kontrola administrátorských práv
 // ============================
+/**
+ * Kontroluje, zda je aktuální uživatel administrátor.
+ *
+ * Pokud není, zobrazí chybovou zprávu a ukončí skript.
+ */
 if (!$user['is_admin']) { // Pokud aktuální uživatel není administrátor
     echo "Access denied. You do not have sufficient permissions to view this page."; // Zobrazení chybové zprávy
     exit(); // Ukončení skriptu
@@ -74,6 +91,14 @@ if (!$user['is_admin']) { // Pokud aktuální uživatel není administrátor
 // ============================
 // Zpracování odstranění uživatele
 // ============================
+/**
+ * Zpracovává žádost o odstranění uživatele.
+ *
+ * Pokud je nalezen uživatel s odpovídajícím hash emailu,
+ * odstraní jej ze seznamu a uloží aktualizovaný seznam.
+ *
+ * @param string $deleteEmailHash Hash emailu uživatele k odstranění.
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_email'])) {
     $deleteEmailHash = $_POST['delete_email']; // Získání hash emailu uživatele k odstranění
 

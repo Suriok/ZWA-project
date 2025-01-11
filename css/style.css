@@ -1,50 +1,59 @@
-body {
-    align-items: center;
-    min-height: 100vh;
-    justify-content: center;
+
+* {
     margin: 0;
     padding: 0;
-    background-color: rgba(237, 237, 237, 0.94);
-    display: flex;
-    flex-direction: column;
+    box-sizing: border-box;
 }
 
+body {
+    display: flex;
+    flex-direction: column; /* Устанавливаем вертикальное расположение элементов */
+    min-height: 100vh; /* Минимальная высота страницы — 100% высоты окна */
+    justify-content: space-between; /* Распределяем пространство между элементами */
+    align-items: center;
+    background-color: rgba(237, 237, 237, 0.94);
+    overflow-x: hidden;
+}
 /* On all pages header same */
-
 header {
-    height: 48px;
+    width: 100%;
+    height: 70px;
     padding-top: 20px;
     align-items: center;
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.81);
     display: flex;
     flex-direction: column;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
-.logo_account {
+.header-container {
     display: flex;
     margin-bottom: 10px;
     flex-direction: row;
     gap: 520px;
 }
-.logo {
+
+.header-logo {
     align-items: center;
     display: flex;
     cursor: pointer;
     text-decoration: none;
     gap: 10px;
 }
+
 .logo_image {
     width: 40px;
     height: 40px;
 }
+
 .logo_text {
     display: flex;
     flex-direction: column;
     margin-top: 5px;
 }
-.logo_text_main {
+
+.logo_text_big {
     font-weight: 800;
     letter-spacing: 5px;
     color: #41047E;
@@ -53,6 +62,7 @@ header {
     font-size: 15px;
     font-family: "Open Sans", sans-serif;
 }
+
 .logo_text_small {
     color: #FF7CFF;
     font-size: 10px;
@@ -62,21 +72,20 @@ header {
     letter-spacing: 2px;
     font-family: "Open Sans", sans-serif;
 }
+
 .line_header {
-    width: 100vw;
+    width: 100%;
     height: 1px;
     border-color: #1c0237;
     background-color: #1c0237;
 }
 
 .profil_image {
-    align-items: center;
     width: 40px;
     height: 40px;
     cursor: pointer;
-    margin-top: 3px;
-    display: flex;
 }
+
 .burger-menu {
     background-color: white;
     border: 2px solid #41047E;
@@ -85,11 +94,12 @@ header {
     width: 150px;
     z-index: 1000;
     display: none;
-    top: 7vh;
+    top: 9vh;
     position: absolute;
     right: 45vh;
     flex-direction: column;
 }
+
 .burger-menu a {
     border-bottom: 1px solid #ddd;
     font-weight: 600;
@@ -98,13 +108,16 @@ header {
     text-decoration: none;
     font-family: "Open Sans", sans-serif;
 }
+
 .burger-menu a:hover {
     background-color: #1c0237;
     color: white;
 }
+
 .burger-menu a:last-child {
     border-bottom: none;
 }
+
 a {
     text-decoration: none;
     cursor: pointer;
@@ -112,28 +125,27 @@ a {
 
 /* header end */
 
-
 /* footer for all pages same */
 footer {
-    min-width: 100vw;
-    margin-top: auto;
+    width: 100%;
     align-items: center;
     justify-content: center;
-    gap: 200px;
     background-color: #1c0237;
     height: 80px;
-    width: 100vw;
-    flex-direction: row;
     display: flex;
+    gap: 200px;
     font-weight: 600;
-    font-size: 18px;
-    font-style: normal;
-    font-optical-sizing: auto;
+    font-size: 25px;
     font-family: "Open Sans", sans-serif;
     color: white;
+    flex-shrink: 0; /* Гарантирует, что footer не будет сжат */
+    margin-top: 200px;
 }
 
+
+
 .swip, .people {
+
     transition: background-color 0.1s ease-in-out;
     color: white;
     width: 110px;
@@ -162,7 +174,7 @@ footer {
     border: solid 3px white;
 }
 
-.people:hover .image_people {
+.people:hover .footer-icon {
     stroke: #1c0237;
     fill: #1c0237;
 }
@@ -171,6 +183,60 @@ footer {
 
 
 /* index.php */
+
+#popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Затемнение */
+    display: none;
+    z-index: 9999; /* Высший приоритет */
+}
+
+#popup {
+    font-family: "Open Sans", sans-serif;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    border: solid 3px #1c0237;
+    box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
+    background-color: white;
+    border-radius: 10px;
+    z-index: 10000; /* Поверх overlay */
+    display: none;
+    text-align: center;
+}
+
+#popup h2 {
+    font-family: "Open Sans", sans-serif;
+    margin-bottom: 15px;
+    font-size: 24px;
+    color: #333;
+}
+
+#popup p {
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#popup button {
+    font-family: "Open Sans", sans-serif;
+    display: inline-block;
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
 .main_part {
     flex: 1;
@@ -200,7 +266,20 @@ footer {
     transition: transform 0.5s, opacity 0.5s;
     opacity: 0;
     word-wrap: break-word;
+    margin-bottom: 20px;
+}
 
+#likedUsersContainer{
+    display: flex;
+    flex-direction: row;
+}
+.text_liked{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    color: #1c0237;
+    margin-bottom: 20px;
 }
 
 .swipe-left {
@@ -211,10 +290,39 @@ footer {
 }
 
 .user_foto {
+    width: 345px;
+    height: 345px;
+    border-radius: 14px;
+    margin-bottom: 5px;
+}
+#likedUsersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Карточка пользователя */
+.user-card {
+    justify-content: center;
+    align-items: center;
+    width: 350px;
+    border: solid 3px #1c0237;
+    border-radius: 15px;
+    box-shadow: 10px 10px 20px rgba(23, 3, 46, 0.34);
+    background-color: rgb(241, 237, 237);
+    top: 20px;
+    word-wrap: break-word;
+    margin-bottom: 20px;
+}
+
+.user-card.user_foto {
     width: 350px;
     height: 350px;
     border-radius: 14px;
 }
+
 .name_and_age {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
@@ -222,6 +330,8 @@ footer {
     font-style: normal;
     font-size: 25px;
     color: #1c0237;
+    padding: 5px;
+
 }
 .main_part_text {
     margin: 10px;
@@ -233,6 +343,7 @@ footer {
     font-style: normal;
     font-size: 16px;
     color: rgba(30, 2, 58, 0.59);
+    padding: 5px;
 }
 .buttons_yes_no {
     display: flex;
@@ -240,7 +351,8 @@ footer {
     gap: 80px;
     align-items: center;
     justify-content: center;
-    margin-top: 150px;
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
 .button_border {
     border: solid 3px rgba(30, 2, 58, 0.78);
@@ -285,7 +397,6 @@ footer {
     font-weight: 600;
     font-style: normal;
     font-size: 15px;
-    margin-bottom: 30px;
 }
 .upper_part {
     display: flex;
@@ -294,7 +405,7 @@ footer {
     align-items: center;
     background-color: #1c0237;
     border-radius: 10px;
-    width: 400px;
+    width: 399px;
     height: 120px;
 }
 .create_account_text {
@@ -321,7 +432,7 @@ footer {
 }
 #photo_preview {
     object-fit: cover;
-    display: none; /* Hidden until an image is uploaded */
+    display: none;
     width: 180px;
     height: 180px;
     border-radius: 50%;
@@ -347,7 +458,7 @@ label[for="profile_photo"]:hover {
 .firs_last_name {
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: 15px;
     font-size: 14px;
 }
 .information_text {
@@ -361,6 +472,11 @@ label[for="profile_photo"]:hover {
     margin-bottom: 8px;
     border-radius: 4px;
     border: solid 2px rgba(28, 2, 55, 0.74);
+    padding: 2px;
+    flex-direction: column;
+    overflow-x: hidden;
+    font-optical-sizing: auto;
+    font-family: "Open Sans", sans-serif;
 }
 .input_inf.error {
     border: 2px solid red;
@@ -385,6 +501,13 @@ label[for="profile_photo"]:hover {
     margin-bottom: 8px;
     height: 80px;
     border: solid 2px rgba(28, 2, 55, 0.74);
+    vertical-align: top;
+    width: 100%;
+    padding: 5px;
+    flex-direction: column;
+    font-optical-sizing: auto;
+    font-family: "Open Sans", sans-serif;
+
 }
 .char_count {
     font-size: 12px;
@@ -437,7 +560,7 @@ label[for="profile_photo"]:hover {
     border-radius: 50%;
 }
 
-.image_people {
+.footer-icon {
     height: 25px;
     width: 25px;
     fill: white;
@@ -458,7 +581,6 @@ label[for="profile_photo"]:hover {
 .profil_information {
     border: solid 3px #1c0237;
     border-radius: 10px;
-    width: 500px;
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
     font-weight: 600;
@@ -469,6 +591,7 @@ label[for="profile_photo"]:hover {
 }
 .profil_main_text {
     color: #1c0237;
+    margin-bottom: 25px;
 }
 .foto_name_surname {
     display: flex;
@@ -528,4 +651,244 @@ label[for="profile_photo"]:hover {
     background-color: #FF7CFF;
     color: #1c0237;
     cursor: pointer;
+}
+
+/* Admin panel */
+
+.admin_container{
+    justify-content: center;
+    align-items: center;
+}
+
+.styled-table{
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #1c0237;
+    background-color: white;
+    width: 150px;
+    justify-content: center;
+}
+
+.admin_container {
+    width: 100%;
+    overflow-x: auto; /* Добавляет горизонтальную прокрутку при необходимости */
+    -webkit-overflow-scrolling: touch; /* Плавная прокрутка на мобильных устройствах */
+    margin-bottom: 20px; /* Отступ снизу для эстетики */
+    justify-content: center;
+
+}
+
+/* Контейнер пагинации */
+#paginationContainer {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    text-align: center;       /* Выравнивание кнопок по центру */
+    margin-top: 20px;        /* Отступ сверху */
+}
+
+/* Общий стиль для ссылок пагинации */
+#paginationContainer a {
+    display: inline-block;    /* Расположить кнопки в ряд */
+    margin: 0 5px;            /* Небольшой горизонтальный отступ */
+    padding: 8px 12px;        /* Внутренние отступы */
+    text-decoration: none;    /* Убрать подчёркивание ссылок */
+    background-color: #eee;   /* Светлый фон */
+    color: #333;              /* Цвет текста */
+    border-radius: 4px;       /* Скруглённые углы */
+    font-size: 14px;          /* Размер шрифта */
+    transition: background-color 0.3s ease;
+}
+
+/* При наведении курсора */
+#paginationContainer a:hover {
+    background-color: #ddd;   /* Немного другой фон */
+}
+
+/* Активная страница */
+#paginationContainer a.active {
+    background-color: #1c0237; /* Например, розовый фон для активной страницы */
+    color: #ffffff;            /* Белый текст */
+    cursor: default;           /* Курсор по умолчанию (без указателя) */
+    pointer-events: none;      /* Отключить клики, чтобы нельзя было нажать ещё раз */
+}
+
+
+@media print {
+    footer {
+        display: none;
+    }
+
+    .upper_part{
+        width: 380px;
+    }
+
+    .create_account{
+        position: fixed; /* Фиксированное позиционирование */
+        top: 100px; /* Расстояние от верхнего края страницы */
+        left: 0; /* Выровнять по левому краю */
+        right: 0; /* Выровнять по правому краю */
+        margin: 0 auto; /* Центровка по горизонтали */
+    }
+
+
+    .char_count{
+        display: none;
+    }
+}
+@media (max-width: 1300px) {
+
+    .burger-menu {
+        right: 185px;
+        top: 61px;
+    }
+
+
+    #paginationContainer a{
+        display: none;
+    }
+}
+
+
+@media (max-width: 800px) {
+    .header-container {
+        gap: 200px;
+    }
+
+
+    footer {
+        gap: 150px;
+    }
+
+    .burger-menu {
+        right: 47px;
+        top: 61px;
+    }
+
+    .foto_name_surname {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .user_account_img {
+        align-items: center;
+        margin-left: 15px;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 8px 10px;
+        font-size: 14px;
+        justify-content: center;
+    }
+
+    /* Скрываем заголовки таблицы */
+    .styled-table thead {
+        display: none;
+        justify-content: center;
+        margin-left: 15px;
+    }
+
+    /* Преобразуем строки таблицы в блочные элементы */
+    .styled-table tr {
+        display: block;
+        margin-bottom: 15px;
+        justify-content: center;
+        margin-left: 15px;
+    }
+
+    /* Преобразуем ячейки таблицы в блочные элементы с псевдоэлементами */
+    .styled-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        border-bottom: 1px solid #dddddd;
+        padding: 10px;
+        position: relative;
+        margin-left: 50px;
+
+    }
+
+    /* Добавляем названия столбцов перед содержимым ячеек */
+    .styled-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        width: 50%;
+        display: inline-block;
+        justify-content: center;
+    }
+
+    /* Центрирование кнопок действий */
+    .styled-table td:last-child {
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Уменьшаем минимальную ширину таблицы для мобильных устройств */
+    .styled-table {
+        width: 300px;
+        justify-content: center;
+    }
+
+    .admin_container {
+        overflow-x: auto; /* Включаем горизонтальную прокрутку */
+        -webkit-overflow-scrolling: touch;
+        justify-content: center;
+        margin-left: 50px;
+    }
+}
+
+
+
+
+@media (max-width: 500px){
+    .header-container{
+        gap: 100px;
+    }
+
+
+    footer{
+        gap: 100px;
+    }
+
+    .burger-menu{
+        right: 47px;
+        top: 61px;
+    }
+
+    .admin_container {
+        overflow-x: auto; /* Включаем горизонтальную прокрутку */
+        -webkit-overflow-scrolling: touch;
+        justify-content: center;
+        margin-left: 50px;
+    }
+
+    /* Скрываем заголовки таблицы */
+    .styled-table thead {
+        display: none;
+        justify-content: center;
+        margin-left: 15px;
+    }
+
+    /* Преобразуем строки таблицы в блочные элементы */
+    .styled-table tr {
+        display: block;
+        margin-bottom: 15px;
+        justify-content: center;
+        margin-left: 15px;
+    }
+
 }

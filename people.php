@@ -1,11 +1,16 @@
 <?php
 session_start();
+
 // ====================
 // Kontrola autorizace
 // ====================
 $isLoggedIn = isset($_SESSION['current_user_email']); // Zda je uživatel přihlášen
 
-// Pokud uživatel není přihlášen, přesměrujeme ho na přihlašovací stránku
+/**
+ * Kontrola přihlášení uživatele.
+ *
+ * Pokud uživatel není přihlášen, bude přesměrován na přihlašovací stránku.
+ */
 if (!isset($_SESSION['current_user_email'])) {
     header('Location: log_in.php');
     exit();
@@ -14,8 +19,14 @@ if (!isset($_SESSION['current_user_email'])) {
 // ====================
 // Cesty k souborům
 // ====================
-$userFilePath = 'user.json'; // Cesta k souboru s uživateli
-$likedFile    = 'liked_users.json'; // Cesta k souboru s "lajknutými" uživateli
+/**
+ * Definice cest k souborům pro uživatele a "lajknuté" uživatele.
+ *
+ * @var string $userFilePath Cesta k souboru s uživateli.
+ * @var string $likedFile Cesta k souboru s "lajknutými" uživateli.
+ */
+$userFilePath = 'user.json';
+$likedFile    = 'liked_users.json';
 
 $loggedInUserHashedEmail = null; // Hash přihlášeného emailu
 $isAdmin = false; // Příznak, zda je uživatel administrátor
@@ -28,6 +39,14 @@ if ($isLoggedIn && isset($_SESSION['user']['email'])) {
 // ====================
 // Načtení uživatelů z JSON souboru
 // ====================
+/**
+ * Načítá uživatele ze souboru JSON.
+ *
+ * Pokud soubor existuje, data jsou dekódována do pole.
+ * Pokud soubor neexistuje nebo data nejsou validní, vrátí prázdné pole.
+ *
+ * @return array Pole uživatelů ze souboru JSON.
+ */
 $users = [];
 if (file_exists($userFilePath)) {
     $dataFromFile = json_decode(file_get_contents($userFilePath), true); // Načtení dat
@@ -39,6 +58,14 @@ if (file_exists($userFilePath)) {
 // ====================
 // Načtení "lajknutých" uživatelů
 // ====================
+/**
+ * Načítá seznam "lajknutých" uživatelů.
+ *
+ * Pokud soubor existuje, data jsou dekódována do pole.
+ * Pokud soubor neexistuje nebo data nejsou validní, vrátí prázdné pole.
+ *
+ * @return array Pole "lajknutých" uživatelů ze souboru JSON.
+ */
 $likedUsers = [];
 if (file_exists($likedFile)) {
     $likedFromFile = json_decode(file_get_contents($likedFile), true); // Načtení dat
@@ -50,11 +77,21 @@ if (file_exists($likedFile)) {
 // ====================
 // Email aktuálního uživatele
 // ====================
+/**
+ * Získá email aktuálně přihlášeného uživatele.
+ *
+ * @var string $currentUserEmail Email aktuálně přihlášeného uživatele.
+ */
 $currentUserEmail = $_SESSION['current_user_email'] ?? '';
 
 // ---------------------
 // POST: Přidání uživatele do seznamu "lajků"
 // ---------------------
+/**
+ * Zpracovává požadavek POST pro přidání uživatele do seznamu "lajků".
+ *
+ * Pokud je email validní, uživatel je přidán do seznamu "lajků" aktuálně přihlášeného uživatele.
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rawData = file_get_contents('php://input'); // Získání dat z těla požadavku
     $data    = json_decode($rawData, true);
@@ -62,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($data['email'])) { // Kontrola, zda byl odeslán email
         $likedEmail = htmlspecialchars($data['email']);
 
-        // Pokud pro uživatele neexistuje seznam lajků, inicializujeme ho
+        // Pokud pro uživatele neexistuje seznam lajku, inicializujeme ho
         if (!isset($likedUsers[$currentUserEmail])) {
             $likedUsers[$currentUserEmail] = [];
         }
@@ -77,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo json_encode([
             'success' => true,
-            'message' => "Uživatel s emailem {$likedEmail} byl přidán do lajků."
+            'message' => "Uživatel s emailem {$likedEmail} byl přidán do lajku."
         ]);
     } else {
         echo json_encode([
@@ -88,15 +125,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// ---------------------
-// GET: Načtení lajknutých uživatelů s podporou stránkování
-// ---------------------
+/**
+ * Zpracovává požadavek GET pro načtení seznamu "lajknutých" uživatelů.
+ *
+ * Data jsou načítána s podporou stránkování, kdy je možné získat určitý počet uživatelů na stránku.
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'get_liked') {
     $allLikedList = $likedUsers[$currentUserEmail] ?? []; // Získání všech lajknutých uživatelů
 
     // Nastavení stránkování: počet uživatelů na stránku
     $itemsPerPage = 3;
-    $totalLiked   = count($allLikedList); // Celkový počet lajků
+    $totalLiked   = count($allLikedList); // Celkový počet lajku
     $totalPages   = ($totalLiked > 0) ? ceil($totalLiked / $itemsPerPage) : 1;
 
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Aktuální stránka

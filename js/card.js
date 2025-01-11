@@ -1,93 +1,45 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const swiper = document.getElementById("swiper"); // Kontejner pro karty
-    const cards = Array.from(swiper.querySelectorAll(".card")); // Všechny karty jako pole
-    let currentIndex = 0; // Index aktuální karty
+// ==================== Pop-up okno při nepřihlášeném uživateli ====================
+document.addEventListener('DOMContentLoaded', function () {
+    const isLoggedIn = window.isLoggedIn; // Získáme proměnnou z PHP
 
-    const buttonHeart = document.querySelector(".button_foto_heart")?.parentElement; // Tlačítko "srdce"
-    const buttonCross = document.querySelector(".button_foto_cross")?.parentElement; // Tlačítko "křížek"
+    if (!isLoggedIn) {
+        const popup = document.getElementById('popup'); // Pop-up okno
+        const overlay = document.getElementById('popup-overlay'); // Překrytí
+        const loginButton = document.querySelector('.login-button'); // Tlačítko "Přihlásit se"
+        const registerButton = document.querySelector('.register-button'); // Tlačítko "Registrovat se"
 
-    // Funkce pro aktualizaci viditelnosti karet
-    function updateCards() {
-        cards.forEach((card, index) => {
-            if (index === currentIndex) {
-                card.style.display = "block"; // Zobrazit aktuální kartu
-                card.style.transform = "translateY(0px)"; // Aktuální karta na svém místě
-                card.style.opacity = 1; // Karta je plně viditelná
-                card.style.zIndex = 2; // Nastavení aktuální karty nad ostatními
-            } else if (index === currentIndex + 1) {
-                card.style.display = "block"; // Zobrazit další kartu
-                card.style.transform = "translateY(-15px)"; // Další karta trochu výš
-                card.style.opacity = 0.8; // Mírně průhledná karta
-                card.style.zIndex = 1; // Další karta je pod aktuální
-            } else {
-                card.style.display = "none"; // Skrýt ostatní karty
-            }
-        });
-    }
+        // Zobrazení pop-up okna a překrytí
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
 
-    // Funkce pro přesunutí na další kartu
-    function showNextCard(direction) {
-        if (currentIndex >= cards.length) {
-            console.log("Všechny karty byly zobrazeny");
-            return; // Pokud byly všechny karty zobrazeny, ukončíme
+        // Zpracování tlačítka "Přihlásit se"
+        if (loginButton) {
+            loginButton.addEventListener('click', () => {
+                window.location.href = 'log_in.php';
+            });
         }
 
-        const currentCard = cards[currentIndex]; // Aktuální karta
-
-        // Animace přesunutí karty na stranu
-        currentCard.style.transition = "transform 0.5s ease, opacity 0.5s ease";
-        if (direction === "right") {
-            currentCard.style.transform = "translateX(100%)"; // Přesunout kartu doprava
-        } else if (direction === "left") {
-            currentCard.style.transform = "translateX(-100%)"; // Přesunout kartu doleva
+        // Zpracování tlačítka "Registrovat se"
+        if (registerButton) {
+            registerButton.addEventListener('click', () => {
+                window.location.href = 'register.php';
+            });
         }
-        currentCard.style.opacity = 0; // Nastavit neviditelnost karty
-
-        // Obsluha události pro dokončení animace a přesunutí na další kartu
-        currentCard.addEventListener(
-            "transitionend",
-            function () {
-                currentCard.style.display = "none"; // Úplně skrýt kartu po animaci
-                currentIndex++; // Přejdeme na další kartu
-
-                // Aktualizace viditelnosti karet
-                if (currentIndex < cards.length) {
-                    updateCards(); // Aktualizujeme zobrazení karet
-                } else {
-                    console.log("Konec seznamu karet");
-                }
-            },
-            { once: true } // Událost se spustí pouze jednou
-        );
     }
-
-    // Obsluha kliknutí na tlačítka "srdce" a "křížek"
-    buttonHeart.addEventListener("click", function () {
-        showNextCard("right"); // Kliknutí na "srdce" přesune kartu doprava
-    });
-
-    buttonCross.addEventListener("click", function () {
-        showNextCard("left"); // Kliknutí na "křížek" přesune kartu doleva
-    });
-
-    // Inicializace karet po načtení stránky
-    updateCards();
 });
 
-
-
-// Realizace Burger menu
+// ==================== Burger menu ====================
 document.addEventListener('DOMContentLoaded', () => {
-    const profileImage = document.querySelector('.profil_image'); // Кнопка открытия меню
-    const burgerMenu = document.getElementById('burgerMenu'); // Само меню
+    const profileImage = document.querySelector('.profil_image'); // Tlačítko pro otevření menu
+    const burgerMenu = document.getElementById('burgerMenu');     // Samotné menu
 
-    if (profileImage && burgerMenu) { // Проверяем, существуют ли элементы на странице
-        // Функция для переключения видимости меню
+    if (profileImage && burgerMenu) {
+        // Přepínání viditelnosti menu
         profileImage.addEventListener('click', () => {
-            burgerMenu.style.display = burgerMenu.style.display === 'flex' ? 'none' : 'flex';
+            burgerMenu.style.display = (burgerMenu.style.display === 'flex') ? 'none' : 'flex';
         });
 
-        // Закрытие меню при клике вне его области
+        // Zavření menu při kliknutí mimo jeho oblast
         document.addEventListener('click', (event) => {
             if (!burgerMenu.contains(event.target) && event.target !== profileImage) {
                 burgerMenu.style.display = 'none';
@@ -96,51 +48,135 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ==================== Náhled fotografie (Photo Preview) ====================
+document.addEventListener('DOMContentLoaded', () => {
+    const inputFile = document.getElementById('profile_photo'); // Vstupní pole pro nahrání souboru
+    const previewImg = document.getElementById('photo_preview'); // Element <img> pro náhled
 
-//photo adder
-    function previewPhoto(event) {
-    const photoPreview = document.getElementById('photo_preview');
-    const file = event.target.files[0];
+    if (inputFile && previewImg) {
+        inputFile.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                previewImg.style.display = 'none';
+                return;
+            }
 
-    if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-    photoPreview.src = e.target.result;
-    photoPreview.style.display = 'block';
-};
-    reader.readAsDataURL(file);
-} else {
-    photoPreview.src = "#";
-    photoPreview.style.display = 'none';
-}
-}
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+});
 
-// Sčitačka pro sloveso v bio
-document.addEventListener("DOMContentLoaded", function () {
-    const bio = document.getElementById("bio");
-    const charCount = document.getElementById("charCount");
+// ==================== Počítadlo znaků pro pole "Bio" ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const bioForm  = document.getElementById('bioForm');
+    const bioInput = document.getElementById('bio');
+    const charCount= document.getElementById('charCount');
+    const msg      = document.getElementById('bioMessage');
 
-    bio.addEventListener("input", function () {
-        const currentLength = bio.value.length;
-        charCount.textContent = `${currentLength}/120`;
+    // Nastavíme rovnou počáteční stav
+    charCount.textContent = bioInput.value.length + '/120';
+
+    // Při psaní
+    bioInput.addEventListener('input', ()=>{
+        charCount.textContent = bioInput.value.length + '/120';
+    });
+
+    // Při odeslání
+    bioForm.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const newBio = bioInput.value.trim();
+        if (newBio.length > 120) {
+            msg.textContent = 'Bio must not exceed 120 characters.';
+            msg.style.color = 'red';
+            return;
+        }
+        try {
+            const response = await fetch('account.php', {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json' },
+                body: JSON.stringify({
+                    action: 'update_bio',
+                    bio: newBio
+                })
+            });
+            const result = await response.json();
+            console.log('Server response:', result);
+            if (result.message === 'Bio successfully updated.') {
+                msg.textContent = 'Bio successfully updated.';
+                msg.style.color = 'green';
+            } else {
+                msg.textContent = result.message || 'An error occurred.';
+                msg.style.color = 'red';
+            }
+        } catch (err) {
+            console.error('Error updating bio:', err);
+            msg.textContent = 'An error occurred, please try again.';
+            msg.style.color = 'red';
+        }
     });
 });
 
-// Different password
+//
+
+// ==================== Validace formuláře ====================
 document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".account_form"); // Formulář
+    const requiredFields = document.querySelectorAll("input[required], select[required], textarea[required]");
+
+    // Validace jednotlivých polí
+    function validateField(field) {
+        if (!field.value.trim()) {
+            field.classList.add("error"); // Přidání třídy "error" pro červené zvýraznění
+        } else {
+            field.classList.remove("error");
+        }
+    }
+
+    // Před odesláním formuláře
+    form.addEventListener("submit", function (event) {
+        let isValid = true;
+
+        requiredFields.forEach((field) => {
+            validateField(field);
+            if (!field.value.trim()) {
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault(); // Zastavení odeslání formuláře při chybách
+        }
+    });
+
+    // Dynamická validace při změně vstupu
+    requiredFields.forEach((field) => {
+        field.addEventListener("input", function () {
+            validateField(field);
+        });
+    });
+
+    // Validace shody hesel
     const password = document.getElementById("password");
     const confirmPassword = document.getElementById("confirm_password");
     const passwordError = document.getElementById("passwordError");
 
+ // ====================    Inicializace Karet ====================
     function validatePasswords() {
-        if (password.value !== confirmPassword.value) {
+        if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
             password.classList.add("error");
             confirmPassword.classList.add("error");
-            passwordError.style.display = "block";
+            if (passwordError) passwordError.style.display = "block"; // Zobrazení chyby
+            return false;
         } else {
             password.classList.remove("error");
             confirmPassword.classList.remove("error");
-            passwordError.style.display = "none";
+            if (passwordError) passwordError.style.display = "none"; // Skrytí chyby
+            return true;
         }
     }
 
@@ -148,49 +184,134 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmPassword.addEventListener("input", validatePasswords);
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const swiper = document.getElementById("swiper"); // Kontejner pro karty
+    const cards = Array.from(swiper.querySelectorAll(".card")); // Všechny karty jako pole
+    let currentIndex = 0; // Index aktuální karty
 
-// AJAX pro stranku register.php
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.account_form');
-    const submitButton = document.querySelector('.create_account_button');
+    /**
+     * Funkce pro aktualizaci viditelnosti karet
+     * Zobrazuje pouze aktuální a následující kartu, ostatní skrývá
+     */
+    function updateCards() {
+        cards.forEach((card, index) => {
+            if (index === currentIndex) {
+                card.style.display = "block"; // Zobrazit aktuální kartu
+                card.style.transform = "translateY(0px)"; // Aktuální karta na svém místě
+                card.style.opacity = 1; // Karta je plně viditelná
+                card.style.zIndex = 2; // Aktuální karta nad ostatními
+            } else if (index === currentIndex + 1) {
+                card.style.display = "block"; // Zobrazit následující kartu
+                card.style.transform = "translateY(-15px)"; // Následující karta je mírně výše
+                card.style.opacity = 0.8; // Karta je částečně průhledná
+                card.style.zIndex = 1; // Následující karta pod aktuální
+            } else {
+                card.style.display = "none"; // Skrýt ostatní karty
+            }
+        });
+    }
 
-    submitButton.addEventListener('click', function (e) {
-        e.preventDefault(); // Предотвращаем стандартное поведение кнопки
+    /**
+     * Funkce pro zobrazení další karty s animací
+     */
+    function showNextCard(direction, card, callback) {
+        card.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+        if (direction === "right") {
+            card.style.transform = "translateX(100%)"; // Přesunout kartu doprava
+        } else if (direction === "left") {
+            card.style.transform = "translateX(-100%)"; // Přesunout kartu doleva
+        }
+        card.style.opacity = 0;
 
-        const formData = new FormData(form);
+        card.addEventListener(
+            "transitionend",
+            function () {
+                card.style.display = "none";
+                currentIndex++;
 
-        fetch('register.php', {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Убираем старые ошибки
-                document.querySelectorAll('.error_message').forEach(el => el.textContent = '');
-                document.querySelectorAll('.input_inf').forEach(el => el.classList.remove('error'));
-
-                if (data.success) {
-                    alert('Registration successful!');
-                    form.reset(); // Очищаем форму
+                if (currentIndex < cards.length) {
+                    updateCards();
                 } else {
-                    // Обрабатываем ошибки
-                    for (const [field, message] of Object.entries(data.errors)) {
-                        const input = document.querySelector(`[name="${field}"]`);
-                        const errorMessage = input?.closest('.form')?.querySelector('.error_message');
-
-                        if (input) {
-                            input.classList.add('error'); // Подсвечиваем поле
-                        }
-                        if (errorMessage) {
-                            errorMessage.textContent = message; // Выводим сообщение
-                        }
-                    }
+                    console.log("Konec seznamu karet");
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+
+                if (typeof callback === "function") {
+                    callback();
+                }
+            },
+            { once: true }
+        );
+    }
+
+    /**
+     * Obsluha kliknutí na tlačítko "srdce"
+     * Odesílá email na server a animuje kartu doprava
+     */
+    async function handleHeartClick(button, card) {
+        const emailToLike = button.getAttribute("data-email");
+
+        if (!emailToLike) {
+            alert("Email uživatele chybí!");
+            return;
+        }
+
+        try {
+            const response = await fetch("people.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: emailToLike }),
             });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log("Uživatel přidán do seznamu lajků!");
+            } else {
+                console.warn(data.message || "Došlo k chybě na serveru.");
+            }
+        } catch (error) {
+            console.error("Chyba při odesílání dat:", error);
+            alert("Nepodařilo se spojit se serverem.");
+        } finally {
+            showNextCard("right", card);
+        }
+    }
+
+    /**
+     * Obsluha kliknutí na tlačítko "křížek"
+     * Animuje kartu doleva a přesune ji na konec seznamu
+     */
+    function handleCrossClick(card) {
+        showNextCard("left", card, function () {
+            // Přesun karty na konec seznamu
+            swiper.appendChild(card); // Přidání karty na konec kontejneru
+            cards.push(cards.shift()); // Aktualizace pořadí v poli karet
+            currentIndex--; // Snížení indexu, aby animace fungovala správně
+            updateCards(); // Aktualizace viditelnosti karet
+        });
+    }
+
+    // Inicializace karet po načtení stránky
+    updateCards();
+
+    /**
+     * Přidání obslužných funkcí pro každou kartu
+     * Připojuje klikací události pro tlačítka "srdce" a "křížek"
+     */
+    cards.forEach((card) => {
+        const buttonHeart = card.querySelector(".button_foto_heart")?.parentElement;
+        const buttonCross = card.querySelector(".button_foto_cross")?.parentElement;
+
+        if (buttonHeart) {
+            buttonHeart.addEventListener("click", function () {
+                handleHeartClick(buttonHeart, card);
+            });
+        }
+
+        if (buttonCross) {
+            buttonCross.addEventListener("click", function () {
+                handleCrossClick(card);
+            });
+        }
     });
 });
 

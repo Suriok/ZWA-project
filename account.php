@@ -1,119 +1,99 @@
 <?php
-// Spustí relaci PHP a zajistí přístup k proměnným relace
 session_start();
-require 'session_check.php';
+require 'session_check.php'; // Pokud máte kontrolu sezení
+$isLoggedIn = isset($_SESSION['current_user_email']); // Zda je uživatel přihlášen
 
-// ====================
-// Kontrola autorizace uživatele
-// ====================
-$isLoggedIn = isset($_SESSION['current_user_email']); // Kontrola, zda je uživatel přihlášen
+$loggedInUserHashedEmail = null; // Hash přihlášeného emailu
+$isAdmin = false; // Příznak, zda je uživatel administrátor
+if ($isLoggedIn && isset($_SESSION['user']['email'])) {
+    $loggedInUserEmail = $_SESSION['user']['email']; // Email aktuálně přihlášeného uživatele
+    $loggedInUserHashedEmail = hash('sha256', $loggedInUserEmail); // Hash emailu
+    $isAdmin = $_SESSION['user']['is_admin'] ?? false; // Zda je uživatel admin
+}
 
+// Kontrola, zda je uživatel přihlášen
 if (!isset($_SESSION['user'])) {
-    // Přesměrování nepřihlášeného uživatele na přihlašovací stránku
     header("Location: log_in.php");
     exit();
 }
 
-$user = $_SESSION['user']; // Získání dat aktuálního uživatele
+$user = $_SESSION['user'];
 
-$plainEmail = $user['email'] ?? ''; // Původní email uživatele
-$hashedEmail = hash('sha256', $plainEmail); // Hash emailu pro bezpečnost
+// Původní (plain) email
+$plainEmail  = $user['email'] ?? '';
+// Hash emailu pro vyhledání v user.json
+$hashedEmail = hash('sha256', $plainEmail);
 
-// Cesta k souboru uživatelů
+// Cesta k souboru
 $usersFile = 'user.json';
 
-$loggedInUserHashedEmail = null;
-$isAdmin = false; // Kontrola, zda je uživatel admin
-if ($isLoggedIn && isset($_SESSION['user']['email'])) {
-    $loggedInUserEmail = $_SESSION['user']['email'];
-    $loggedInUserHashedEmail = hash('sha256', $loggedInUserEmail);
-    $isAdmin = $_SESSION['user']['is_admin'] ?? false;
-}
-
-// ====================
-// Funkce pro práci s uživateli
-// ====================
-function loadUsers($usersFile) {
-    // Načte uživatele z JSON souboru
-    if (file_exists($usersFile)) {
-        $users = json_decode(file_get_contents($usersFile), true);
-        if (is_array($users)) {
-            return $users;
-        }
+/**
+ * Načítá všechny uživatele ze souboru JSON.
+ *
+ * Tato funkce kontroluje, zda soubor existuje, a poté načte
+ * obsah souboru jako asociativní pole.
+ *
+ * @param string $file Cesta k souboru JSON.
+ * @return array Pole uživatelů na úspěch nebo prázdné pole při chybě.
+ */
+function loadUsers($file) {
+    if (file_exists($file)) {
+        $data = json_decode(file_get_contents($file), true);
+        return is_array($data) ? $data : [];
     }
     return [];
 }
 
-function saveUsers($usersFile, $users) {
-    // Uloží uživatele zpět do JSON souboru
-    return file_put_contents($usersFile, json_encode($users, JSON_PRETTY_PRINT)) !== false;
+/**
+ * Ukládá uživatelská data do souboru JSON.
+ *
+ * Tato funkce zapisuje asociativní pole uživatelů do JSON souboru.
+ * Data jsou zapsána ve formátu s pěkným odsazením pro čitelnost.
+ *
+ * @param string $file Cesta k souboru JSON.
+ * @param array $users Pole uživatelů, které se má uložit.
+ * @return bool `True` při úspěšném uložení, `False` při chybě.
+ */
+function saveUsers($file, $users) {
+    return file_put_contents($file, json_encode($users, JSON_PRETTY_PRINT)) !== false;
 }
 
-// Načtení aktuálních uživatelů
+// Načteme všechny uživatele z JSON
 $users = loadUsers($usersFile);
 
-// ====================
-// Zpracování POST požadavků
-// ====================
+/**
+ * Aktualizuje bio přihlášeného uživatele.
+ *
+ * Tato funkce ověřuje požadavek na změnu bio, validuje vstup,
+ * kontroluje maximální délku a chrání proti XSS. Následně aktualizuje bio
+ * v uživatelském souboru a v aktuální session.
+ *
+ * @param array $users Pole všech uživatelů načtených ze souboru.
+ * @param string $hashedEmail Hash e-mailu aktuálně přihlášeného uživatele.
+ * @param string $newBio Nové bio, které uživatel zadal.
+ * @return string JSON odpověď s výsledkem operace.
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Aktualizace jména a příjmení přes AJAX
-    if (isset($_POST['action']) && $_POST['action'] === 'update_name_surname') {
-        $newName = trim($_POST['name'] ?? '');
-        $newSurname = trim($_POST['surname'] ?? '');
+    $rawData = file_get_contents('php://input');
+    $input = json_decode($rawData, true);
 
-        // Validace jména a příjmení
-        if (empty($newName) || empty($newSurname)) {
-            echo json_encode(['success' => false, 'message' => 'Name and surname cannot be empty.']);
+    if (isset($input['action']) && $input['action'] === 'update_bio') {
+        if (!isset($input['bio'])) {
+            echo json_encode(['message' => 'Bio is missing.']);
             exit();
         }
 
-        $sanitizedName = htmlspecialchars($newName, ENT_QUOTES, 'UTF-8'); // Ochrana proti XSS
-        $sanitizedSurname = htmlspecialchars($newSurname, ENT_QUOTES, 'UTF-8');
+        $newBio = trim($input['bio']);
+        if (strlen($newBio) > 120) {
+            echo json_encode(['message' => 'Bio must not exceed 120 characters.']);
+            exit();
+        }
 
+        $sanitizedBio = $newBio; // XSS ochrana
         $found = false;
+
         foreach ($users as &$existingUser) {
-            if ($existingUser['email'] === $hashedEmail) {
-                // Aktualizace dat uživatele
-                $existingUser['name'] = $sanitizedName;
-                $existingUser['surname'] = $sanitizedSurname;
-                $found = true;
-                break;
-            }
-        }
-        unset($existingUser);
-
-        if ($found) {
-            if (saveUsers($usersFile, $users)) {
-                // Aktualizace dat v relaci
-                $_SESSION['user']['name'] = $sanitizedName;
-                $_SESSION['user']['surname'] = $sanitizedSurname;
-                echo json_encode(['success' => true, 'message' => 'Name and surname updated successfully.']);
-                exit();
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to save data.']);
-                exit();
-            }
-        } else {
-            echo json_encode(['success' => false, 'message' => 'User not found.']);
-            exit();
-        }
-    }
-
-    // Aktualizace bio přes AJAX
-    if (isset($_POST['action']) && $_POST['action'] === 'update_bio') {
-        $newBio = trim($_POST['bio'] ?? '');
-
-        // Validace délky bio
-        if (strlen($newBio) > 500) {
-            echo json_encode(['success' => false, 'message' => 'Bio must not exceed 500 characters.']);
-            exit();
-        }
-
-        $sanitizedBio = htmlspecialchars($newBio, ENT_QUOTES, 'UTF-8'); // Ochrana proti XSS
-
-        $found = false;
-        foreach ($users as &$existingUser) {
-            if ($existingUser['email'] === $hashedEmail) {
+            if (isset($existingUser['email']) && $existingUser['email'] === $hashedEmail) {
                 $existingUser['bio'] = $sanitizedBio;
                 $found = true;
                 break;
@@ -123,29 +103,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($found) {
             if (saveUsers($usersFile, $users)) {
-                // Aktualizace bio v relaci
                 $_SESSION['user']['bio'] = $sanitizedBio;
-                echo json_encode(['success' => true, 'message' => 'Bio successfully updated.', 'bio' => $sanitizedBio]);
-                exit();
+                echo json_encode(['message' => 'Bio successfully updated.', 'bio' => $sanitizedBio]);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to save data.']);
-                exit();
+                echo json_encode(['message' => 'Failed to save data to file.']);
             }
         } else {
-            echo json_encode(['success' => false, 'message' => 'User not found.']);
-            exit();
+            echo json_encode(['message' => 'User not found.']);
         }
-    }
-
-    // Odhlášení uživatele
-    if (isset($_POST['log_out'])) {
-        session_unset();
-        session_destroy();
-        header("Location: index.php");
         exit();
     }
 }
+
+/**
+ * Odhlásí aktuálně přihlášeného uživatele.
+ *
+ * Tato funkce vymaže všechny údaje o uživateli ze session,
+ * ukončí relaci a přesměruje na hlavní stránku.
+ *
+ * @return void
+ */
+if (isset($_POST['log_out'])) {
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -226,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="div_bio">
             <form class="account_form" id="bioForm">
                 <label for="bio" class="bio_text">Bio</label>
-                <textarea class="input_inf_bio" id="bio" name="bio" maxlength="500"><?php echo trim(htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8')); ?></textarea>
+                <textarea class="input_inf_bio" id="bio" name="bio" maxlength="120"><?php echo trim(htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8')); ?></textarea>
                 <div id="charCount" class="char_count">0/120</div>
                 <button class="edit_profil" type="submit">Save Bio</button>
                 <div id="bioMessage"></div>

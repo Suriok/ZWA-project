@@ -742,9 +742,6 @@ label[for="profile_photo"]:hover {
         margin: 0 auto; /* Центровка по горизонтали */
     }
 
-    .create_account_button{
-        display: none;
-    }
 
     .char_count{
         display: none;
@@ -757,13 +754,6 @@ label[for="profile_photo"]:hover {
         top: 61px;
     }
 
-    .edit_profil {
-        display: none;
-    }
-
-    .profil_image {
-        display: none;
-    }
 
     #paginationContainer a{
         display: none;

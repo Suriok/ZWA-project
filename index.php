@@ -6,7 +6,15 @@ session_start();
 // ====================
 $isLoggedIn = isset($_SESSION['current_user_email']);
 
-// Funkce pro vypocet veku na zaklade data narozeni
+/**
+ * Funkce pro vypocet veku na zaklade data narozeni.
+ *
+ * Tato funkce pouziva objekty DateTime k vypoctu rozdilu mezi
+ * aktualnim datem a datem narozeni uzivatele.
+ *
+ * @param string $dateOfBirth Datum narozeni ve formatu YYYY-MM-DD.
+ * @return int|null Vraci vek uzivatele nebo `null`, pokud je datum neplatne.
+ */
 function calculateAge($dateOfBirth) {
     try {
         $dob = new DateTime($dateOfBirth); // Vytvori objekt DateTime
@@ -44,6 +52,12 @@ if ($isLoggedIn && isset($_SESSION['user']['email'])) {
 // ====================
 // Odhlaseni uzivatele
 // ====================
+/**
+ * Funkce pro odhlaseni uzivatele.
+ *
+ * Tato cast kodu odhlasi aktualne prihlaseneho uzivatele,
+ * zrusi vsechny session promenne a presmeruje na hlavni stranku.
+ */
 if (isset($_GET['logout'])) {
     session_unset(); // Odstrani vsechny promenne session
     session_destroy(); // Ukonci session

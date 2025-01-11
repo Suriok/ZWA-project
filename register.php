@@ -12,6 +12,7 @@ unset($_SESSION['errors'], $_SESSION['oldValues']);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="foto/favicon.svg" sizes="48x48">
@@ -69,11 +70,11 @@ unset($_SESSION['errors'], $_SESSION['oldValues']);
                             name="name"
                             placeholder="John"
                             value="<?php echo htmlspecialchars($oldValues['name'] ?? ''); ?>"
-                            pattern="[a-zA-Z]+"
-                            required
-                    >
+                            pattern="[a-zA-Z\s]+" required>
                     <span class="error_message"><?php echo $errors['name'] ?? ''; ?></span>
                 </div>
+
+                <!-- Surname -->
                 <div class="form">
                     <label for="surname" class="information_text">Surname</label>
                     <input
@@ -81,11 +82,11 @@ unset($_SESSION['errors'], $_SESSION['oldValues']);
                             id="surname"
                             type="text"
                             name="surname"
+                            required
                             placeholder="Doe"
                             value="<?php echo htmlspecialchars($oldValues['surname'] ?? ''); ?>"
-                            pattern="[a-zA-Z]+"
-                            required
-                    >
+                            pattern="[a-zA-Z\s]+" >
+
                     <span class="error_message"><?php echo $errors['surname'] ?? ''; ?></span>
                 </div>
             </div>
@@ -100,8 +101,7 @@ unset($_SESSION['errors'], $_SESSION['oldValues']);
                         name="email"
                         placeholder="johndoe@gmail.com"
                         value="<?php echo htmlspecialchars($oldValues['email'] ?? ''); ?>"
-                        required
-                >
+                        required>
                 <span class="error_message"><?php echo $errors['email'] ?? ''; ?></span>
             </div>
 
